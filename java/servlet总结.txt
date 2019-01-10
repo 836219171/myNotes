@@ -1,0 +1,124 @@
+1   重写doget方法时response.getWriter().append("Served at: ").append(request.getContextPath());这句话不删除会有中文乱码
+2   在eclipse中打开tomcat即可 不然重复打开会端口占用
+3   servlet-class是对应的包名加上类名
+4   创建servlet时要在src上创建
+5   解决中文乱码  对象.setCharacterEncoding("utf-8");
+6   静态警告private static final long serialVersionUID = 1L;  解决兼容性问题 虽然不懂什么时候会不兼容。好像是序列号和序列号的问题
+7   servlet是控制器  
+8   servlet与jsp结合时 action不要忘记加前沿路径即request.getcontextpath();
+9   get和post的差别是get不可以重复提交数据  post安全性高
+10  getParameter得到的是字符串，getAttribute得到的是对象，
+     getParameter得到的是GET/POST和表单传递过来的字符串
+11  请求重定向  forward = "/1/success.jsp" RequestDispatcher re = req.getRequestDisptcher(forward);  re forward(req,resp);可以参数传递
+    请求转发    resp.sendRedirect("/1/success.jsp"); 可以定义外部容器
+12  <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+     <meta http-equiv="Expires" content="0">清除浏览器缓存
+13  PreparedStatement pstmt = con.prepareStatement("UPDATE table4 SET m = ? WHERE x = ?");
+14  List<Map<String,String>> resultList = new ArrayList<Map<String,String>>();
+while (rs.next()){
+		    		String name = rs.getString("username");    
+   String mima = rs.getString("password");
+resultList .put("name",name);
+resultList .put("password",mima );
+		   		 System.out.println(name);
+		    	}
+return resultList ;将数据库中的值取出来
+result.close();要放在循环外面
+function update(){
+	document.form1.action="update.dao";
+	document.form1.submit();
+	
+}
+需要不同的action时可以用js
+			
+15    添加时间：SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");//  定义时间格式。
+	java.sql.Date timePara = null;// 定义sql.Data型数据，否则无法添加到数据库
+	timePara = new java.sql.Date(new Date().getTime());//获取当前时间。
+
+16   getParameter获取jsp页面时默认获取的是iso-8859-1 必须转化为gbk才不会中文乱码
+
+     	String article_content = new String(rq.getParameter("article_content").getBytes("iso-8859-1"), "utf-8");  
+17   太多了 忘记总结了 filter过滤器不要忘记使用 是一个很好的工具 但是一定要配置正确 否则会影响到其他的servlet的运行
+    <filter>
+<filter-name>listfilter</filter-name>
+<filter-class>Servlet.listfilter</filter-class>
+</filter>
+<filter-mapping>
+<filter-name>listfilter</filter-name>
+<url-pattern>/article_list.jsp</url-pattern>
+</filter-mapping>
+18  < url-pattern > / </ url-pattern >   不会匹配到*.jsp，即：*.jsp不会进入spring的 DispatcherServlet类 。
+    < url-pattern > /* </ url-pattern > 会匹配*.jsp，会出现返回jsp视图时再次进入spring的DispatcherServlet 类，导致找不到对应的controller所以报404错。 
+
+    总之，关于web.xml的url映射的小知识:
+    < url-pattern>/</url-pattern>  会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url
+    < url-pattern>/*</url-pattern> 会匹配所有url：路径型的和后缀型的url(包括/login,*.jsp,*.js和*.html等)
+19 jsp九大内置对象
+ request           请求对象　            类型 javax.servlet.ServletRequest        作用域 Request
+
+response          响应对象              类型 javax.servlet.SrvletResponse        作用域 Page
+
+pageContext       页面上下文对象        类型 javax.servlet.jsp.PageContext       作用域 Page
+
+session           会话对象              类型 javax.servlet.http.HttpSession      作用域 Session
+
+application       应用程序对象          类型 javax.servlet.ServletContext        作用域 Application
+
+out               输出对象              类型 javax.servlet.jsp.JspWriter         作用域 Page
+
+config            配置对象              类型 javax.servlet.ServletConfig         作用域 Page
+
+page              页面对象              类型 javax.lang.Object                   作用域 Page
+
+exception         例外对象              类型 javax.lang.Throwable                作用域 page
+
+“exception” 对象则代表了JSP文件运行时所产生的例外对象，此对象不能在一般JSP文件中直接使用，而只能在使用了“<%@ page isErrorPage="true "%>”的JSP文件中使用。
+
+20  何为作用域:
+
+　　先让我们看看效果：
+
+　　大概流程是这样的，我们访问index.jsp的时候，分别对pageContext, request, session,application四个作用域中的变量进行累加。（当然先判断这个变量是不是存在，如果变量不存在，则要把变量初始化成1）。计算完成后就从index.jsp执行forward跳转到test.jsp。在test.jsp里再进行一次累加，然后显示出这四个整数来。
+
+　　从显示的结果来看，我们可以直观的得出结论：
+
+　　page里的变量没法从index.jsp传递到test.jsp。只要页面跳转了，它们就不见了。
+
+　　request里的变量可以跨越forward前后的两页。但是只要刷新页面，它们就重新计算了。
+
+　　session和application里的变量一直在累加，开始还看不出区别，只要关闭浏览器，再次重启浏览器访问这页，session里的变量就重新计算了。
+
+    application里的变量一直在累加，除非你重启tomcat，否则它会一直变大。
+
+
+	21  作用域规定的是变量的有效期限:
+
+　　如果把变量放到pageContext里，就说明它的作用域是page，它的有效范围只在当前jsp页面里。
+
+　　从把变量放到pageContext开始，到jsp页面结束，你都可以使用这个变量。
+
+　　如果把变量放到request里，就说明它的作用域是request，它的有效范围是当前请求周期。
+
+　　所谓请求周期，就是指从http请求发起，到服务器处理结束，返回响应的整个过程。在这个过程中可能使用forward的方式跳转了多个jsp页面，在这些页面里你都可以使用这个变量。
+
+　　如果把变量放到session里，就说明它的作用域是session，它的有效范围是当前会话。
+
+　　所谓当前会话，就是指从用户打开浏览器开始，到用户关闭浏览器这中间的过程。这个过程可能包含多个请求响应。也就是说，只要用户不关浏览器，服务器就有办法知道这些请求是一个人发起的，整个过程被称为一个会话（session），而放到会话中的变量，就可以在当前会话的所有请求里使用。
+
+　　如果把变量放到application里，就说明它的作用域是application，它的有效范围是整个应用。
+
+　　整个应用是指从应用启动，到应用结束。我们没有说“从服务器启动，到服务器关闭”，是因为一个服务器可能部署多个应用，当然你关闭了服务器，就会把上面所有的应用都关闭了。
+
+　　application作用域里的变量，它们的存活时间是最长的，如果不进行手工删除，它们就一直可以使用。
+
+　　与上述三个不同的是，application里的变量可以被所有用户共用。如果用户甲的操作修改了application中的变量，用户乙访问时得到的是修改后的值。这在其他scope中都是不会发生的，page, request,session都是完全隔离的，无论如何修改都不会影响其他人的数据。
+
+
+22	在编写servlet过程中，需要用到 ServletConfig、ServletContext对象，对这两种对象的介绍如下：
+
+	ServletContext对象：servlet容器在启动时会加载web应用，并为每个web应用创建唯一的servlet context对象，可以把ServletContext看成是一个Web应用的服务器端组件的共享内存，在ServletContext中可以存放共享数据。ServletContext对象是真正的一个全局对象，凡是web容器中的Servlet都可以访问。
+
+	servletConfig对象：用于封装servlet的配置信息。从一个servlet被实例化后，对任何客户端在任何时候访问有效，但仅对servlet自身有效，一个servlet的ServletConfig对象不能被另一个servlet访问。
+
+

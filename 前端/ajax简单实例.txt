@@ -1,0 +1,37 @@
+ function login(){
+        var user = {
+            username:$("#UserName").val(),
+            password:$("#password").val(),
+
+        };
+        $.ajax({
+            type : "POST",
+            url : "login",
+            dataType : "html",
+            data:user,
+
+            success : function (msg) {
+
+                $("#showResult").html(msg);
+                $("#showResult").css("color","red");
+            },
+            error : function () {
+                alert("出错了");
+            }
+        });
+    }
+    </script>
+	
+	
+	
+
+一般情况下，Controller中方法返回值类型有两种
+
+1、String 直接跳转到某View界面
+
+2、Void 不需要进行页面跳转，直接访问下一个方法
+3  返回的json对象直接对象.属性获取值
+4  ajax返回文字时要加入下面这句话Requestmapping（produces = "text/html;charset=UTF-8"）
+5 json 数组引用teach_news[i]["id"]
+6 字符串拼接 很简单，在=后面加入"",内部出现变量时用'++'
+7 返回json字符串应该 public object 然后return "{ \"success\": \"上传成功\"} ";

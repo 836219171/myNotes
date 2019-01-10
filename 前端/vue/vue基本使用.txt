@@ -1,0 +1,2 @@
+1 目前项目每次打开都是使用 npm run serve 
+2 node.js每次启动都是http-serve

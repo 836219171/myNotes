@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://impl.service.dataservice.bm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://service.dataservice.bm.com/" name="MyServices" targetNamespace="http://impl.service.dataservice.bm.com/">
+  <wsdl:import location="http://localhost:8050/services/DataServices?wsdl=MyWebService.wsdl" namespace="http://service.dataservice.bm.com/">
+    </wsdl:import>
+  <wsdl:binding name="MyServicesSoapBinding" type="ns1:MyWebService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="qryDataImpl">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="qryDataImpl">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="qryDataImplResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sayHello">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="sayHelloResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="citizenQuery">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="citizenQuery">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="citizenQueryResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MyServices">
+    <wsdl:port binding="tns:MyServicesSoapBinding" name="MyWebServiceImplPort">
+      <soap:address location="http://localhost:8050/services/DataServices"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

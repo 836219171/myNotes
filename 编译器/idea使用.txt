@@ -1,0 +1,54 @@
+在css的background的url属性上不写绝对路径，有时会读不到 直接background:("/image/...");
+3 jsp页面里面写入sevlet出错： 没有引入servlet.jsp的jar包 <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.1</version>
+      <scope>provided</scope>
+    </dependency>
+4 今天解决了一些idea使用过程中的一些警告
+   比如common-io.jar和standar.jar的冲突
+       lo4j的配置（这玩意真好使）一下子就找到错误所在
+        idea重新发布的步骤在idea发布里面
+5 ALT+鼠标左键，复制错误信息
+6 查找：ctrl+N 搜索类名快捷键  
+		ctrl+F在本类中查找  
+		ctrl+shift+n 搜索文件
+		symbol查找，类似模糊查找 ctrl+shift+alt+n
+		ctrl+shift+n全文查找
+		
+7 ctrl+q 查看方法返回值
+8 shift+enter  开启到下一行
+9 小写变大写快捷键 ctrl+shift+u
+10 查看接口的ctrl+alt+b
+11 自动补全 alt+ctrl+v
+12 在方法上面直接写/**就可以打出来doc注释了
+13 查看方法被调用情况 
+14 快速生成 serialVersionUID  ctrl+shift+i
+15 shift+f1不重启刷新页面
+16 ctrl+shift+O 除去无用的包
+17 alt + v 放大编辑
+18 ctrl+e 最近使用的文档
+19 自动转义json字符串 alt+enter  退出编辑模式是ctrl+f4
+20 收尾 比如自动补全大括号或者加分号  ctrl+shift+enter
+21 ctrl+w 快速选中这个单词
+22 批量修改，先选中这个单词，然后alt+j依次选中这些
+23 批量写代码 alt+鼠标左键下拉
+24 
+25 ctrl+h查看类的继承关系
+26 springboot启动多项目实例的时候，在Edit Configurations的时候 VM options一栏中加入-Dserver.port=8761
+27 alt+7 列出本类的所有方法 也可以右键---find Usages ，查看类或者方法在哪里使用，在local viraiables里面
+28 在idea的maven项目中，如果要打包src目录下面的文件，需要在build中加入如下配置
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<!-- 是否替换资源中的属性-->
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	eclipse不需要
+	
+	!?*.java;!?*.form;!?*.class;!?*.groovy;!?*.scala;!?*.flex;!?*.kt;!?*.clj;!?*.aj
+	!?*.java;!?*.form;!?*.class;!?*.groovy;!?*.scala;!?*.flex;!?*.kt;!?*.clj;!?*.aj;!?*.xml

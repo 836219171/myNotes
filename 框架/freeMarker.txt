@@ -1,0 +1,68 @@
+1 今天采坑踩了三个小时。
+1 eclipse抽风 xml文件咋滴都不好使了。classes文件不更新xml文件
+这里注意几个地方 1 要把project --build automacilally打开 或者先关上 clean一下再build
+                 2  把valitate xml打开了。
+				 3 把没用的项目先删掉，影响maven project的速度
+				 4 注意java build path里面生成classes文件要对
+配置文件				 
+ <bean id="freemarkerConfig"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPaths">
+        <list>
+        <value>/WEB-INF/ftl/</value>
+        <value>classpath:/ftl/</value>
+        </list>
+        </property>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_update_delay">0</prop>
+                <prop key="default_encoding">UTF-8</prop>
+                <prop key="number_format">0.##########</prop>
+                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+                <prop key="classic_compatible">true</prop>
+                <prop key="template_exception_handler">ignore</prop>
+            </props>
+        </property>
+    </bean>
+     <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="cache" value="true" />
+        <property name="prefix" value="/" />
+        <property name="suffix" value=".ftl" />
+        <property name="order" value="0"></property>
+        <property name="contentType" value="text/html;charset=UTF-8"></property>
+        <property name="requestContextAttribute" value="request" />
+        <property name="exposeSpringMacroHelpers" value="true" />
+        <property name="exposeRequestAttributes" value="true" />
+        <property name="exposeSessionAttributes" value="true" />
+    </bean>
+    	<mvc:default-servlet-handler/>
+	
+	
+     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+         <property name="order" value="1"></property>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+	注意order越小，优先级别越大
+	另外，freemarker不支持user/list这种带反斜杠的写法。目前没弄懂为什么支持
+	如果不写order，spring默认加载的是jsp的视图解析器
+	
+4 freemarker可以像jsp一样，定义一个公用的jsp文件，然后别的.ftl直接引入，更加强大的是一个文件就能搞定，可以用面向对象的方式，在文件内部定义属性，
+然后对象.属性就可以引入不同的文件内容 
+  如下标签即可实现，<#macro hot>  </#macro>
+  
+5  springboot 下的一个配置文件***************************
+    spring.freemarker.charset=UTF-8
+	spring.freemarker.content-type=text/html;charset=UTF-8
+	#渲染 request session对象
+	spring.freemarker.expose-request-attributes=true
+	spring.freemarker.expose-session-attributes=true
+	#设置是否公开一个由Spring的宏库使用的名为“springMacroRequestContext”的RequestContext。
+	spring.freemarker.expose-spring-macro-helpers=true
+	spring.freemarker.suffix=.ftl
+
+	spring.freemarker.settings.datetime_format=yyyy-MM-dd HH:mm:ss
+	spring.freemarker.settings.default_encoding=UTF-8
+	spring.freemarker.settings.auto_import=common/common.ftl as common
+    

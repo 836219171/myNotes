@@ -1,0 +1,122 @@
+---synchornized锁的是对象
+一个对象里面如果有多个synchronized方法，某一个时刻内，只要一个线程去调用其中的一个synchronized方法了，其它的线程都只能等待，
+ * 
+ * 换句话说，某一个时刻内，只能有唯一一个线程去访问这些synchronized方法
+ * 
+	锁的是当前对象this，被锁定后，其它的线程都不能进入到当前对象的其它的synchronized方法
+锁的是Class	
+
+1 多线程中断可以使用interrupt打一个中断标志，然后用isInterrupted判断是否存在该标志。如果存在该标志则抛出一个InterruptedException异常来中断代码
+	注意this.interrupted方法和this.isInterrupted方法的区别，在于是否清楚中断的状态，第一个并未清楚中断状态，所以执行两次的话都是true，第二个连中断的状态都一起清除了
+	所以第二次执行结果为false
+2 sleep状态下可以进入interrupt状态
+3 慎用stop，作为已经废弃的方法，会导致数据不一致性，垃圾无法清理
+4 yield方法是放弃当前的cpu资源。将它让给其他的任务去占用cpu执行时间。但是放弃的时间不确定，有可能刚刚放弃，马上又获得cpu时间片。
+5 优先级高的不一定先执行，也不一定先结束，我的理解是优先级高对应的cpu资源占用的比较多。
+6 线程分为两种，用户线程和守护线程。典型的守护线程就是垃圾回收线程。
+7 synchronized锁的是对象，哪个线程先执行带synchronized关键字的方法，哪个线程就持有该方法所属对象的锁lock，其他线程只能呈等待状态。
+8 可重入锁:在一个synchronized方法/块的内部调用本类的其他synchronized方法/块的时候，是永远可以得到锁的
+9 出现异常，锁自动释放
+10	尽量用synchronized来锁住代码块，而不是锁住方法。
+11  锁住this和锁住非this对象的区别，锁住this对象的时候，若是类中还有其他同步方法锁的是this对象，则只能等待。
+														若是锁住非this对象，则可以不用等待。实现方法如下。
+		Object o = new Object();
+         synchronized (o) {
+             System.out.println("这是方法1");
+             System.out.println("线程开始睡眠，释放锁");
+             //这里模拟一个非常耗时的业务
+             System.out.println("线程睡眠结束");
+        }
+		
+12 在使用synchronized对象锁的时候，如果使用string类型，注意常量池的缓存功能，会被当成同一对象造成同步
+13 对象锁代替方法锁，增加灵活度
+14 synchornized关键字加到static方法上是给Class类上锁，而synchornized关键字加在非static方法上是给对象上锁。
+   synchornized static 等同于 synchornized(Service.class)
+15 当使用synchornized关键字锁对象的时候，即使对象的属性被改变，运行的结果还是同步。
+16 在选择Runable接口和继承thread这两种方式的时候，如果使用多继承，则用实现Runnable接口的方式是必要的。
+17 volatile能保证数据的可见性，但不能保证原子性。
+   而synchornized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公共内存中的数据做同步。
+18 除了在i++操作时使用synchronized关键字实现同步外，还可以使用AtomicInteger原子类进行实现。count.incrementAndGet()，这个方法代替i++
+
+
+/********************************使用wait/notify要注意的事项：********************************/
+
+19 wait方法释放锁，sleep方法不释放锁。这句话的意思就是在同步代码块中，sleep方法仍然会同步，但是如果碰到wait方法，那么就会将锁释放掉
+20 当wait和notify锁的是同一个对象的时候，必须执行完notify方法所在的同步synchronized代码块后才释放锁。
+21 为了保证wait和notify的正确执行顺序，可以加一个布尔值当作标示位，来保证程序逻辑的正常执行
+22 ---wait有可能会造成虚假唤醒，必须用while，不能用if 
+详细解释： 当使用wait之后，如果使用if，那么当唤醒的时候不会去判断条件，当存在多个消费者的时候会出现异常。使用while就不会出现这个问题 
+		但是！！！使用while的时候有可能会唤醒本类的线程，就是随机唤醒，使用消费者唤醒消费者的情况。
+23 java.io.IOException: Write end dead 这个是在多线程管道输出的时候，异常是由于输入或者输出没有关闭造成的。
+24 在有些情况下，如果子线程中进行大量耗时运算，主线程往往将早于子线程结束之前结束。这时，如果主线程想要等待子线程执行完成之后再结束，那么要用到join()方法。
+
+/************************synchronized原理**************/
+
+https://blog.csdn.net/javazejian/article/details/72828483
+
+25 在Java早期版本中，synchronized属于重量级锁，效率低下，因为监视器锁（monitor）是依赖于底层的操作系统的Mutex Lock来实现的，而操作系统实现线程之间的切换时需要从用户态转换到核心态，
+   这个状态之间的转换需要相对比较长的时间，时间成本相对较高，这也是为什么早期的synchronized效率低的原因。庆幸的是在Java 6之后Java官方对从JVM层面对synchronized较大优化，
+   所以现在的synchronized锁效率也优化得很不错了，Java 6之后，为了减少获得锁和释放锁所带来的性能消耗，引入了***轻量级锁****和****偏向锁***。	
+
+26 	Java虚拟机对synchronized的优化
+	锁的状态总共有四种，无锁状态、偏向锁、轻量级锁和重量级锁。随着锁的竞争，锁可以从偏向锁升级到轻量级锁，再升级的重量级锁，但是锁的升级是单向的，也
+	就是说只能从低到高升级，不会出现锁的降级。
+27 join与interrupt方法如果彼此遇到，会出现异常。
+28 可以用join(long)来设定等待时间，超过这个时间则不等待。
+29 join(long) sleep(long)的区别是join是用wait来实现的。
+30 可以采用继承ThreadLocal，重写initiaValue方法，来设置默认值.
+31 使用InheritableThreadLocal类可以让子线程从父线程中取得值.使用这个之后变量值不是保存在ThreadLocal中了,而是保存在InheritableThreadLocal中.
+32 synchronized和wait+notify通知和ReentrantLock+Condition+signal相比，后者更加灵活。体现在前者唤醒的时候是随机唤醒，后者唤醒的时候可以选择性唤醒。
+33 unlock一般放在finally中
+34 	wait ----> await
+	wait(long timeout) --> await(long time,TimeUnit unit)
+	notify() --> signal()
+	notifyAll() --> signalAll()
+	
+35 公平锁是在new ReentrantLock()的时候加上true，而非公平锁是加上false，公平锁是表示线程获取锁的顺序按照加锁的顺序来分配的。非公平锁效率高一些。默认是非公平锁
+36 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

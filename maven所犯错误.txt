@@ -1,0 +1,3 @@
+1 在eclipse中创建maven项目时注意更改maven的setting.xml文件的位置
+2 如果出现[ERROR] No compiler is provided in this environment. Perhaps you are running on a JRE rather than 这个问题，是jdk没有配置对的原因。 
+ 在 http://blog.csdn.net/lslk9898/article/details/73836745中得到了解决。

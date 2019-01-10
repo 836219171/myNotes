@@ -1,0 +1,3 @@
+   @ConditionalOnMissingBean({ RestOperations.class, RestTemplate.class })
+    //Spring Boot的自动配置机制依靠@ConditionalOnMissingBean注解判断是否执行初始化代码，
+    // 即如果用户已经创建了bean，则相关的初始化代码不再执行。

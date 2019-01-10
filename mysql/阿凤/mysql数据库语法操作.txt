@@ -1,0 +1,286 @@
+############Authro:Alan############
+【常见的数据库】
+MySQL		：免费的小型的数据库,现在被Oracle收购.
+Oracle		：Oracle公司收费的大型的数据库.
+SQLServer	：微软公司收费中型的数据库.
+DB2			：IBM公司收费的大型的数据库.
+SyBase		：SyBase公司收费的数据库.已经被淘汰.PowerDesigner数据建模的工具.
+SQLite		：小型的嵌入式的数据库.
+***** Java程序中经常使用的数据库
+MySQL
+Oracle
+
+【针对数据库的操作】DB:
+=========================================================================================================
+
+登录: mysql -u账号 -p密码 [-h主机名 -P端口号]
+
+[查看所有数据库]:show databases;
+[查看某个数据库的定义信息]:show create database 数据库名;
+[查看当前正在使用的数据库信息]:select database();
+
+[创建数据库]:create database 数据库名称 [character set 字符集 collate 字符集校对];
+
+[删除数据库]:drop database 数据库名;
+
+[修改数据库]:ALTER DATABASE 原数据库名 MODIFY NAME=新数据库名 character set 新字符集 collate 校对规则;
+
+使用/切换数据库:use 数据库名;
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+【针对表的操作】TABLE:
+=====================================【针对表的操作TABLE:】====================================================================
+
+[创建表CREATE]:
+	/--create table 表名(
+ 		列名 类型 约束,
+			列名 类型 约束);
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[数据类型]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[数据类型]:
+MySQL:
+	/--tinyint/smallint/int/bigint
+
+	/--char/varchar  
+			区别?char是固定长度的字符串,varchar可变长度的字符串.  * char(8) 和 varchar(8)
+									
+			如果插入一个字符串hello 插入到char 那么 插入hello   .插入到varchar中 插入hello
+
+	/--float
+
+	/--double
+
+	/--bit     	
+			这个类似boolean 只有0和1
+
+	/--date/time/datetime/timestamp   
+			datetime和timestamp都是既有日期又有时间的日期类型
+ 						
+			区别? datetime需要使用外部传入的日期.如果没传这个值就是Null. timestamp会使用系统当前的时间作为这个值的默认值.
+
+	/--(文本文件) Text
+	/--(二进制文件)BLOB
+	/--***** Oralce使用CLOB/BLOB
+	/--***** MYSQL中除了字符串类型需要设置长度其他的类型都有默认长度.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[单表约束]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[约束]：
+[单表约束]：
+	/--主键约束：primary key (默认就是唯一非空的)
+	/--唯一约束：unique
+	/--非空约束：not null
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表的查看]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表的查看]
+	/--查看数据库中的所有表:show tables;
+
+	/--查看表结构:desc 表名;
+
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表的删除]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表的删除]
+	/--drop table 表名;
+
+	删除表中信息:
+	/--delete from 表名[where 条件];//不加条件清空表信息,主键信息保留.
+
+	/--truncate table表名;//清空表信息,主键信息不保留.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表的修改,名字更改,编码修改]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表的修改,名字更改,编码修改]
+	/--修改表名:rename table 原表名 to 新表名
+
+	/--修改表的编码:alter table 表名 character set 字符集
+
+	
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+【表中字段/列】
+=========================================【表中字段/列 增删改】================================================================
+
+	/--[添加]:alter table 表名 add 列名 类型 约束;			alter table employee add image varchar(50);
+
+	/--[修改1]:alter table  表名 change列名 新列名 数据类型 约束  	alter table employee change image eimage varchar(60);
+
+	/--[修改2]:alter table 表名 modify 列名 类型 约束...;		alter table employee modify image varchar(80) not null;
+
+	/--[删除]alter table 表名 drop 列名;				alter table employee drop job;
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表中信息操作-插入insert ]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表中信息操作-插入]:
+	/--insert into 表名(列名) values(值); 				insert into employee (eid,ename,email) values (null,'aaa','aaa@itcast.cn');
+	/--insert into 表名 values(全列名字);				insert into employee values (null,'bbb','bbb@itcast.cn','1990-09-01','HR','I am HR')
+	/--insert into 表名 (列名1,列名2,,列名3) 
+									values(值1,值2,至3),(值1,值2,至3),(值1,值2,至3);insert into employee (eid,ename,email) 
+													values(null,'aaa','aaa@itcast.cn'),null,'aaa','aaa@itcast.cn');
+
+ 	插入中文：
+	insert into employee (eid,ename,email) values (null,'张三','aaa@163.cn');
+	--> ERROR 1366 (HY000): Incorrect string value: '\xD5\xC5\xC8\xFD' for column 'ename' at row 1
+		::此处的错误是因为命令行使用的是gbk字符,而数据库使用的是utf8字符集导致的
+					***** 插入中文问题的解决：1,set names gbk; 2,找到MYSQL的安装路径/my.ini文件,修改默认编码:default-character-set=gbk;
+				   * show variables like '%character%';
+ 
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表中信息操作-修改]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表中信息操作-修改]:
+	/--update 表名 set 字段=值 ,字段=值 [where 条件];; //会修改所有
+	/--update 表名 set 字段=值,字段=值 [where 条件];;//例如:where id=10;
+	/--update 表名 set 字段=值 ,字段=值 where 字段 in (字段具体值1,字段具体值2,字段具体值3);
+?	注意事项：
+		* 列名和值类型也要一致.
+		* 值不能超过列的最大长度.
+		* 值是字符串或日期,需要使用单引号.
+
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[表中信息操-作删除记录]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[表中信息操-作删除记录]
+
+	/--delete from 表 [where 条件];					delete from employee where eid = 8;
+
+	/--删除表中的所有记录truncate table 表名  和 delete from 表 区别?
+				* delete from 删除表的记录：一条一条进行删除. delete属于DML。
+      				  * 事务管理 只能作用在DML语句上.如果再一个事务中使用delete删除所有记录，可以找回.
+	
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+【表中信息操作-查看】:
+======================================【表中信息操作-查看】===============================================
+[普通查询]
+	/--[查看所有字段]select * from 表名;//获取表中所有信息
+	/--[查看指定字段]:select 字段1 字段2...  from 表名;
+	/--[去除重复信息]select  distinct  字段 from 表名;
+
+[别名]:
+	/--[查询结果 表别名]:select * from 表名 as 别名;
+			select * from 表名 as 别名;
+	/--[字段 列别名]:
+		select 字段名 as 别名 from 表名;
+		select 字段名 别名 from 表名;
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#########################################[限制查询where]##################################################
+
+[限制查询where]### where 条件  group by 字段 having 条件  order by 表 asc/desc//排序永远在最后
+
+/--where语句后面可以加：
+	
+	/--[条件的关键字]：= , > , >= , <, <= , <>
+	 		
+	/--[like中可以使用占位符]: _ 和 %  ：下划线匹配一个字符, %:可以匹配任意多个字符.		* like ‘张％’;  like ‘张_’; like ‘%明’; like ‘%明%’; 
+							
+	/--[符合/不符合集合内的元素]. 									
+			(1)符合集合内的元素: where 字段 in (值1,值2,值3,...);//如果集合中有null,则不会有结果* id in (1,2,3)
+			(2)不在集合中的元素:where 字段 not in (值1,值2,值3,...);//如果集合中有null,则不会有结果* id not in (1,2,3)
+
+	/--[and or not]
+
+	/--[限制查询数量 limit]:
+			//select * from xxx limit 起始行 ,条数
+			(1):where 字段 limit 起始行;//从某行往后 
+			(2) where 字段 limit 起始行 ,条数;//从某行往后查询N条数
+	
+	/--[取值范围]:	(1)where between 值1 and 值2; // 必须条件:值1<值2  数字/日期都可以判断	
+			
+	/--空/非空:where is null; where is not null
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^排序查询order by^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/--排序查询order by 
+	/--order by 对数据进行排序.默认升序. （asc升序(默认),desc降序）				*select * from exam order by chinese desc;
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^分组group by^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/--分组group by
+	/--group by 字段1,字段2,字段3....							*SELECT product,SUM(price) FROM orderitem GROUP BY product;
+
+	/-- group by 字段 having 限制条件;							*SELECT product,SUM(price) FROM orderitem WHERE product LIKE '电%' GROUP BY product HAVING SUM(price) > 1500 ORDER BY SUM(price) DESC;
+
+
+
+【表中信息查询处理-聚合函数】:
+=========================================================================================================
+[设置显示格式,拼接字符串]
+	/--select concat(字符串,字段....)  form 表名
+	/--concat(str....)实现字符串拼接;
+[统计行数查询count(字段)]
+	/--select count(字段) from 表名 where 条件; //count(*)统计所有判断,包括null ||count(字段) 忽略null
+[平均值avg]
+	/--select avg(字段) from 表名 where 条件;
+[求和sum]
+	/--: select sum(字段) from 表名 where 条件;
+[最大值: max() 最小值:min()]
+	/--最大值: max() 最小值:min()
+
+【顺序:	s...f...w...g...h...o...】:
+=========================================================================================================
+
+
+
+【约束-外键约束】:约束：用来保证数据的完成性.
+=========================================================================================================
+[一对多的关系的建表原则]：
+	/--* 在多的一方创建一个字段,这个字段作为外键执向一的一方的主键.
+[多对多的关系的建表原则]
+	/--*　创建一个第三种表，中间表中至少需要两个字段分别作为外键执向多对多双方的各自的主键.
+
+[一对一的关系的建表原则]
+	/--* 唯一外键对应：假设一对一的双方是一对多的关系.在多的一方创建外键执向一的一方的主键.需要在外键上添加一个unique约束.
+	/--* 主键对应：将一对一的双方的主键建立映射.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^多表约束：外键约束^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	/--* 多表约束：外键约束！！！
+	/--* Alter table 表名 add foregin key (表的字段) references  外表(外表字段)
+	/--***** 给orders表中的cid添加外键约束. 
+					alter table orders add foreign key (cid) references customer(cid);
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+【多表的查询的方式】
+===========================================多表的查询的方式==============================================
+/--** 交叉连接： select * from A,B;   --- 获得的是两个表的笛卡尔积.
+   
+/--内连接: inner join -- inner 可以省略
+	/--* 显式内连接：select * from A inner join B on 条件; 
+   			  	  * SELECT * FROM customer c INNER JOIN orders o ON c.cid = o.cid;
+	/--* 隐式内连接：select * from A,B where 条件;
+       				  * SELECT * FROM customer c ,orders o WHERE c.cid = o.cid;
+/--外连接：outer join -- outer 可以省略
+	/--* 左外连接：left outer join  -- select * from A left outer join B on 条件;
+       				  * SELECT * FROM customer c LEFT OUTER JOIN orders o ON c.cid = o.cid;
+	/-- * 右外连接：right outer join -- select * from A right outer join B on 条件;
+        			  * SELECT * FROM customer c RIGHT OUTER JOIN orders o ON c.cid = o.cid;
+
+
+===========================================/*对查询的结果 再处理*/==============================================
+/*对查询的结果 再处理*/
+SELECT * FROM 
+(SELECT  flname 收入方式,COUNT(1)个数,SUM(money)总金额 FROM gjp_zhangwu GROUP BY flname)g
+WHERE 总金额>(SELECT AVG(总金额) FROM (SELECT  flname 收入方式,COUNT(1)个数,SUM(money)总金额 FROM gjp_zhangwu GROUP BY flname)f) ;
+
+===========================================/*事物管理*/==============================================
+/--事物的特征:
+	/--原子性：强调事务的不可分割.
+	/--一致性：强调的是事务的执行的前后，数据的完整性要保持一致.
+	/--隔离性：一个事务的执行不应该受到其他事务的干扰.
+	/--持久性：事务一旦结束(提交/回滚)数据就持久保持到了数据库.
+/--MYSQL的事务管理有两种方式:(MYSQL数据库事务默认是自动提交的.Oracle数据库事务默认是不自动提交.)
+	/--1.手动开启事务
+		* start transaction; -- 开启事务
+		* 多条sql;
+		* commit/rollback;
+
+	/--* 2.设置一个自动提交参数
+		* show variables like '%commit%'; -- 查看与commit相关参数.
+		* set autocommit = 0; -- 将autocommit参数设置为OFF.
+

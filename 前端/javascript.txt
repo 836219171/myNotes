@@ -1,0 +1,26 @@
+1 使用innerHTML时语法为 对象.innerHTML="";
+2 date.getMonth()要加1（0-11） 才是12个月的表示方法
+3 Date 前面有加号表示时间戳
+4 class类只有在6.0以上版本才能使用
+5 学习了如何使用全局变量 
+声明方式一<script>                             
+  var test = 5;//全局变量                             
+  function a(){ 
+    var a = 3;//局部变量 
+    alert(a); 
+  } 
+  function b(){ 
+    alert(test); 
+  } 
+</script>
+声明方式二  window.test = 50; 
+声明方式三  不使用var
+<script> 
+    test = 5;//全局变量 
+    function a(){ 
+      aa = 3;//也是全局变量 
+      alert(test); 
+    } 
+    //a();  //输出5 
+    //alert(aa);//这里也可以方法a()方法里面的变量，因为aa是全局变量 
+  </script>

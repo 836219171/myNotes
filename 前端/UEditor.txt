@@ -1,0 +1,3 @@
+使用步骤：
+1：引入jar包，由于是maven工程。而且部分jar包maven无法下载。所以手动在repository目录下建立关联
+2: 引入js文件，注意这里顺序不能错，先引入ueditor.config.js，再引入ueditor.all.js。否则会出现 UE is not a function

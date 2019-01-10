@@ -1,0 +1,90 @@
+@Param注解
+在方法参数的前面写上@Param("参数名"),表示给参数命名,名称就是括号中的内容
+
+public Student select(@Param("aaaa") String name,@Param("bbbb")int class_id); 
+给入参 String name 命名为aaaa,然后sql语句....where  s_name= #{aaaa} 中就可以根据aaaa得到参数值了
+
+驼峰映射（如果不开启驼峰映射则需要写映射文件）
+
+    <configuration>  
+         <settings>  
+              <setting name="mapUnderscoreToCamelCase" value="true" />  
+         </settings>  
+    </configuration>  
+
+
+
+
+<select id="findAll" resultMap="findAll">
+         SELECT * FROM teach_news
+    </select>
+
+    <resultMap id="findAll" type="com.Dao.teach_news">
+        <id property="id" column="id"/>
+        <result property="teach_news_title" column="teach_news_title"/>
+        <result property="teach_news_content" column="teach_news_content"/>
+        <result property="day_time" column="day_time"/>
+
+    </resultMap>
+驼峰映射命名规则：数据库中带下划线 实体中不带 并且小写 若是两个单词则第二个单词首字母大写，这是正常的书写规范。
+is_man
+
+bean：
+private Integer isMan; 
+5.resultMap和resulttype不能同时存在
+6.Mybaitis传入参数为数组时 
+  Dao层
+   List<news> findAll( Map<String,Object> param);
+  Mapper层
+  <select id="selectByFy" resultType="com.Dao.Student" parameterType="Map">
+        SELECT *
+        FROM student
+        <if test="a!=null">
+            <where>
+                <if test="name!=null and name!=''"> name=#{name}</if>
+                <if test="age!=null and age!=''">AND  age=#{age}</if>
+            </where>
+            LIMIT #{a},#{b}
+        </if>
+    </select>
+	
+7 添加时返回主键 useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+8 1 selectKey 在新增数据时可以返回主键，
+    第一种，自增型的时候，注意order里面是after
+	
+    <!--新增信息，并拿到新增信息的表主键信息。
+        新增数据，得到主键的外层写法没什么特别，跟普通的insert一样。只不过里面加了selectKey-->
+    <insert id="insertAndgetkey" parameterType="com.soft.mybatis.model.User">
+        <!--selectKey  会将 SELECT LAST_INSERT_ID()的结果放入到传入的model的主键里面，
+            keyProperty 对应的model中的主键的属性名，这里是 user 中的id，因为它跟数据库的主键对应
+            order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行,多用与自增主键，
+                  BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，
+                        这种适合那种主键不是自增的类型
+            resultType 主键类型 -->
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_user (username,password,create_date) values(#{username},#{password},#{createDate})
+    </insert>
+	
+    第二种 uuid，非自增型的时候。order里面是before
+ <insert id="insert" parameterType="com.soft.mybatis.model.Customer">
+        <!-- 跟自增主键方式相比，这里的不同之处只有两点
+                    1  insert语句需要写id字段了，并且 values里面也不能省略
+                    2 selectKey 的order属性需要写成BEFORE 因为这样才能将生成的uuid主键放入到model中，
+                    这样后面的insert的values里面的id才不会获取为空
+              跟自增主键相比就这点区别，当然了这里的获取主键id的方式为 select uuid()
+              当然也可以另写别生成函数。-->
+        <selectKey keyProperty="id" order="BEFORE" resultType="String">
+            select uuid()
+        </selectKey>
+        insert into t_customer (id,c_name,c_sex,c_ceroNo,c_ceroType,c_age)
+        values (#{id},#{name},#{sex},#{ceroNo},#{ceroType},#{age})
+    </insert>
+
+10  如果表名师动态的，则必须使用 ${} 预编译的问题 
+11 使用日期比较大小时使用这个 <![CDATA[]]> 表示mybatis不会去编译这一部分
+
+	例如     <if test="endTime!=null">
+				AND t.end_time <![CDATA[ <= ]]> #{endTime}
+			</if>

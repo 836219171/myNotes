@@ -1,0 +1,27 @@
+1 dubbo使用的是Hession协议
+2 主流的二进制序列化方式有 MessagePack
+							Protocol Buffers
+							
+3 静态变量的序列化：序列化不保存静态变量的状态
+4 父类没有实现序列化，子类实现序列化，传输过后子类不能成功还原，必须要父类也实现序列化。
+5 反之，若是父类有序列化，子类可以不用实现序列化接口。
+6 序列化实现浅克隆和深克隆
+  浅克隆：只复制对象，不复制对象的引用
+  深克隆： 把引用也克隆了
+  
+7 主流的序列化技术 
+
+	Hession 序列化快，但是占用带宽大
+	Hession2
+	xml
+	protobuf 优势是压缩时间长，网络带宽占用的少
+	kryo  新的，效率特高，待验证
+	FST
+	thrift
+	protostuff 
+	avro
+8 dubbo官网 
+https://dubbo.gitbooks.io/dubbo-user-book/content/preface/background.html
+9 dubbo reference里面的check属性，当有循环依赖的时候可以用这个解决
+10 dubbo rmi基于tcp协议
+	hession webservice http thift基于http协议

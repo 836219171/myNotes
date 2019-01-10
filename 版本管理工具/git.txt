@@ -1,0 +1,58 @@
+使用git的时候，创建工作空间需要使用 git init的指令
+使用签名  git config user.name = 836219171
+添加的时候先git status看一下有几个要添加的文件，再git add要添加的文件，再git commit添加上传   或者git  commit  –m “注释内容”, 直接带注释提交
+版本硬回退 git reset --hard HEAD^(~n)
+.删除某个文件
+ 先删除文件
+再git add 再提交
+通过git diff 可以找到发生冲突的文件及冲突的内容。
+
+
+*****************************************************
+836219171
+qinliang110
+以上只是本地仓库，还需要推送到远端.
+1。 增加远程地址
+git remote add  <远端代号>   <远端地址> 。
+git  remote  add  origin  https://github.com/user111/Helloworld.git https://github.com/836219171/XLpageUtils.git
+2  推送到远程库
+git  push   <远端代号>    <本地分支名称>。
+git  push  origin  master
+git clone 
+git log 查看日志(可以查看commitId)
+Git reset --hard commitId
+rebase是风险较高的merge
+
+命令输入:
+
+git push origin master
+
+出现
+
+failed to push some refs to 'https://github.com/CrazyDony/text.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+原因:自己分支版本低于主版本
+
+解决方案  git push -u origin master-f 
+          git pull origin master(先pull下来更新)
+
+
+
+克隆远端
+
+删除远端文件
+1 首先git rm 文件
+2 然后git commit同步到本地库
+3 push到远端仓库
+
+
+git init 初始化
+
+
+git和svn的区别
+1 git可以add到本地，在本地有仓库
+2 server服务器由github托管，硬盘可靠性较高，不然的话要做svn集群，较为麻烦

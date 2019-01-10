@@ -1,0 +1,38 @@
+phase 阶段
+alias 别名
+capacity 容量 常用内存等意思
+illegal 不合法的
+argument 参数
+loop 环，可以用来表示循环 循环队列用
+dymmy      虚设的  
+contains   包含
+recursive  递归
+actual     真实的
+Criteria   标准
+indices    复数，多
+simulation 模拟
+examine	   检查
+stock      库存
+trace      追踪
+surplus    剩余
+
+
+
+
+Activiti单词************************
+Engine     引擎
+combination 联合
+Engine      引擎
+deployment  部署，调度
+CATEGORY    类型 ，部门
+initiator   发起人
+approval    审批
+
+
+*************************************
+maven
+reimport    再输入
+compile     编译
+deploy      展开，有效的利用
+verify      核实
+site        设置  安放

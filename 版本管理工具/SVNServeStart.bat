@@ -1,0 +1,1 @@
+svnserve -d -r E:\SVN\Server\svn-repertory

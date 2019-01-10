@@ -1,0 +1,44 @@
+使用cxf的步骤
+1 加入pom的依赖
+<dependency>
+<groupId>org.apache.cxf</groupId>
+<artifactId>cxf-rt-frontend-jaxws</artifactId>
+<version>3.1.6</version>
+</dependency>
+<dependency>
+<groupId>org.apache.cxf</groupId>
+<artifactId>cxf-rt-transports-http</artifactId>
+<version>3.1.6</version>
+</dependency>
+2 新建一个类
+@Autowired
+    private Bus bus;
+	/**
+	 * Service注入
+	 */
+    @Autowired
+    private MyWebService myWebService; //自定义接口，随便写
+
+
+	//默认加载ServletRegistrationBean类。实例化一个new CXFServlet()。如果不写，会实例化一个默认的CXFServlet
+    @Bean
+    public ServletRegistrationBean dispatcherServlet() {
+        return new ServletRegistrationBean(new CXFServlet(), "/*");
+    }
+	
+
+    /**
+    * Title: endpoint 
+    * Description: TODO
+    * @return   
+    * Endpoint
+     */
+	 //发布接口的启动类
+    @Bean
+    public Endpoint endpoint() {
+        EndpointImpl endpoint = new EndpointImpl(bus,myWebService);
+      //接口发布在 /DataServices 目录下
+        endpoint.publish("/DataServices");
+        return endpoint;
+    }
+	最后访问的路径是 http://localhost:8050/services/DataServices?wsdl

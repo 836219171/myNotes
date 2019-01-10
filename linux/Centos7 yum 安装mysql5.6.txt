@@ -1,0 +1,148 @@
+
+linux 记得按快照
+#一、安装前准备
+卸载mysql rpm -e –nodeps +包名
+          查找rpm -qa|grep -i mysql  
+
+#1.停止firewall，一定禁止或者允许执行否则你mysql极可能无法启动
+systemctl stop firewalld.service
+#2.禁止firewall开机启动
+systemctl disable firewalld.service
+
+#3.禁止selinux，否则如果修改了mysql配置极可能启动不起来。
+临时关闭：setenforce 0
+#永久性关闭：
+sed -i '/^SELINUX=/s/enforcing/disabled/' /etc/selinux/config
+grep  '^SELINUX=' /etc/selinux/config
+
+#4.配置时间同步
+yum install ntp -y
+ntpdate pool.ntp.org
+echo '#time sync by hua at 2018.4.7'>>/var/spool/cron/root
+echo '*/2 * * * * /usr/sbin/ntpdate pool.ntp.org >/dev/null 2>&1'>>/var/spool/cron/root
+crontab -l
+
+#4.安装兼职性工具
+yum install net-tools 
+
+
+二、安装mysql5.6
+
+#1.下载mysql
+#官网地址：https://dev.mysql.com/downloads/repo/yum/
+#旧版本yum源地址：https://repo.mysql.com/
+#其中：
+#mysql-community-release-el7-xx..noarch.rpm为mysql5.6版，主要特征为mysql-xxx
+#mysql57-community-release-el7-xx.noarch.rpm为mysql5.7版本，主要特征为mysql57-xxx
+
+mkdir -p /disk1/tools/
+cd /disk1/tools/
+rpm -ih https://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm
+yum install mysql mysql-server mysql-devel -y
+
+
+#也可以下载相关的rpm包安装，目前为止最新的是mysql5.6.39，过一段时间版本可能会变化
+#根据情况修改下面的版本即可，如果yum能安装成功即不用“手工安装”
+
+############################################手工安装开始######################################################
+mkdir mysql
+cd mysql
+
+wget http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64/mysql-community-libs-5.6.39-2.el7.x86_64.rpm
+wget http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64/mysql-community-client-5.6.39-2.el7.x86_64.rpm
+wget http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64/mysql-community-devel-5.6.39-2.el7.x86_64.rpm
+wget http://repo.mysql.com/yum/mysql-5.6-community/el/7/x86_64/mysql-community-server-5.6.39-2.el7.x86_64.rpm
+#安装mysql
+yum install mysql-community-*.rpm
+
+############################################手工安装结束######################################################
+
+#2.修改配置文件
+
+#备份原来的my.cnf
+cp /etc/my.cnf /etc/my.cnf.orig
+#建立日志目录
+mkdir -p  /disk1/logs/mysql/mysql5.6/error
+mkdir -p /disk1/logs/mysql/mysql5.6/slow
+chown -R mysql.mysql /disk1/logs/mysql
+#建立mysql数据存放目录 
+mkdir -p /disk1/mysqlData/mysql5.6
+chown -R mysql.mysql /disk1/mysqlData/mysql5.6
+
+
+vi /etc/my.cnf
+[mysql]
+default-character-set=utf8
+
+[mysqld]
+##add by hua##
+datadir = /disk1/mysqlData/mysql5.6
+port = 3306
+server_id =1
+
+#socket = /tmp/mysql.sock
+#设置默认编码，也可以取消
+default-storage-engine=INNODB
+character-set-server=utf8
+collation-server=utf8_general_ci
+
+log-bin=/disk1/logs/mysql/mysql5.6/mysql-bin
+innodb_file_per_table=1
+
+slow-query-log = on
+slow_query_log_file = /disk1/logs/mysql/mysql5.6/slow/slowquery.log
+long_query_time = 3
+log-queries-not-using-indexes = on
+log-error = /disk1/logs/mysql/mysql5.6/error/error.log
+
+
+
+[mysqld_safe]
+#log-error=/var/log/mysqld.log
+log-error = /disk1/logs/mysql/mysql5.6/error/error.log
+
+
+
+#4.启动mysql,如果启动失败，说明selinux配置修改没有重启或者没有临时关闭
+#如果上面没问题，还有可能相应的目录权限没有配置或目录不存在
+
+service mysqld start
+ps -ef |grep mysql
+service mysqld status
+
+#设置开机启动
+systemctl enable mysqld.service
+systemctl list-unit-files|grep mysql
+
+
+三、授权设置
+
+#1.修改登陆密码并授权192.168网段能使用root登陆mysql，密码均为123456
+mysql -uroot
+set password for 'root'@'localhost' = password('qinliang110');
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'qinliang110' WITH GRANT OPTION;
+flush privileges;
+\q
+
+
+#2.测试mysql登陆
+mysql -uroot -pqinliang110 -e 'show databases;'
+
+
+
+#3.用本机win测试一下远程登陆情况，我这里用的是SQLyog客户端（也可以用Navicat for MySQL）
+
+									
+flying 飞翔
+QQ：715031064
+广州linux运维：478477301
+linux运维菜鸟：313184229
+2018.4.7
+
+CREATE USER 'qinliang'@'localhost' IDENTIFIED BY 'qinliang110';
+SELECT host, user, password FROM mysql.user WHERE user='qinliang';
+UPDATE user SET password=password("新密码") WHERE user='root';
+
+
+
+

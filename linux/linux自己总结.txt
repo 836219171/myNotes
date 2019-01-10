@@ -1,0 +1,94 @@
+记录一些自我感觉饿比较重要且常用的命令来复习
+centos 7默认使用的是firewall防火墙，使用jredis时要关闭它
+systemctl stop firewalld.service #停止firewall
+systemctl disable firewalld.service #禁止firewall开机启动
+1 查找 find / -name '*.conf' 
+2 locate索引查找速度较快 运行前需要执行updatedb来更新索引
+3 软连接:当前目录建立映射目录，类似快捷方式的意思。ln -s /etc/sysconfig/iptables iptable
+4 压缩 windows一般打包成 .zip
+       linux下一般打包成tar.gz 解压命令: tar -zxvf XXX.tar.gz
+	                           压缩命令:tar -zcvf XXX.tar.gz
+	   .gz表示是否经过压缩
+	   
+	   若是zip压缩命令为zip -r pack.zip pack/*
+	                 zip mypackage.zip 1.txt 2.txt
+			解压命令 unzip mypackage.zip		 
+					 
+5 rpm类似于.exe  rpm -ivh  安装 i是install  v是查看安装信息 h是可以看见，进度条
+                 rpm -e 卸载
+6 yum命令 yum install xxx
+          yum list|grep xxx
+7 redis会周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件，在此基础上实现了主从同步
+8 关闭某个进程的指令
+   一：查看一个软件是否启动起来 ps -ef|grep xxx 看到端口号
+   然后kill 端口号
+   二：例如nginx  执行./nginx
+                  关闭  ./nginx -s stop
+				  重新加载 ./nginx -s reload
+				  
+9 grep 内容 对象
+表示从“对象”中查找“内容”，并打印
+
+|
+管道符号，前一个命令的输出（即结果）作为下个命令的输入
+rpm -qa
+rpm管理命令 查询所有安装的软件
+所以rpm -qa|grep softname
+就是从安装的软件中查询出softname这个软件	
+
+ps 是列出所有进程 ps -ef|grep xxx 查找xxx所在进程并且列出详细信息
+10   vim
+	按ESC键 跳到命令模式，然后： 
+	:w 保存文件但不退出vi 
+	:w file 将修改另外保存到file中，不退出vi 
+	:w! 强制保存，不推出vi 
+	:wq 保存文件并退出vi 
+	:wq! 强制保存文件，并退出vi 
+	q: 不保存文件，退出vi 
+	:q! 不保存文件，强制退出vi 
+	:e! 放弃所有修改，从上次保存文件开始再编辑			  
+	8erguMyVp1>(
+	
+11 查找错误日志  mysqld --verbose --help|grep my.cnf
+
+12  查找所有".h"文件中的含有"helloworld"字符串的文件
+
+	find /PATH -name "*.h" -exec grep -in "helloworld" {} \;
+
+	find /PATH -name "*.h" | xargs grep -in "helloworld"
+	
+	lacate也可以查找，而且查找的更快。但是需要用updatedb更新文件索引
+	
+13 kill -9 -port 杀死进程
+   ps -ef|grep mysql   查询mysql的进程
+   rm -rvf 删除带目录的文件夹
+   
+   /*****************解决tomcat端口号占用***************/
+   netstat -lnp|grep 8150 查询占用端口号8150的进程
+   然后kll -9 -进程id
+   
+14 mv oldfilename new filename 重命名
+
+	查看大文件用less  类似vim
+	查看日志一般用tail
+	跟踪日志 tail -20f filename
+	history 查看历史命令
+	echo 输出环境变量
+	
+15 chkconfig --list查看开机启动的服务
+16  查看网络状况  netstat -anp|grep 8080
+17 关于用户  useradd xxx    
+             passwd xxxxx
+			 groupadd huahsan
+			 usermod -g huashan linghuchong
+			 groupadd emei
+			 查看用户信息 id linghuchong
+18 modified 修改
+	mod 取模
+19 命令行打开网页 link url
+20 vim打开后 输入/后开始搜索指定内容
+21 linux 查看日志 cat 如果是压缩日志.gz结尾的用zcat命令
+22 .gz文件的解压操作 
+	gzip -d  压缩文件
+	gunzip  压缩文件
+            			 

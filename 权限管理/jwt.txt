@@ -1,0 +1,9 @@
+1 项目中的jwt配置
+jwt:
+  auth:
+    secret: nbqncskxlWhVi0seOML1JzUsh00WeNBV
+  refresh:
+    secret: wAkL1piV5KR4Z5tLUhX5ecosQnHPabzR
+  expireMinutes:
+    authToken: 168
+    refreshToken: 336

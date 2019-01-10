@@ -1,0 +1,8 @@
+云栖社区的一篇博文，讲的比较概括，清晰
+1 https://yq.aliyun.com/articles/652988?spm=a2c4e.11157919.spm-cont-list.183.146c27aeZMVUJN  
+
+缓存应用：echache，memcache，redis的比较
+
+nosql的事务比较
+ 1 Redis支持事务 MongoDB不支持事务
+ 

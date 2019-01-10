@@ -1,0 +1,47 @@
+HTTP和RPC
+
+Dubbo rpc框架，服务治理功能完善，不仅提供了服务注册发现，以及路由，面向分布式集群的基础能力，
+还涉及了面向开发测试的泛化调用的机制。同时也提供了服务治理，监控的可视化平台。
+
+Spring Cloud  提供微服务架构下的一站式解决方案。
+springCloud采用HTTPRestful调用方式。
+
+**************************
+客户端负载均衡器 Ribbon
+Ribbon实现软负载均衡的三点是
+1. 服务发现 ：依据服务的名字找到所有的服务列表
+2. 服务选择规则 ：依据规则策略从多个服务中选择一个
+3. 服务监听 ： 检测失效的服务，做到高效剔除
+
+1 过程是通过ServerList获取所有的服务，
+2 然后通过ServerListFilter过滤掉一些服务
+3 最后用IRule的规则选择一个有效服务
+
+
+通信方式： RestTemplate
+			Feign
+
+feign 使用方式 1 加上依赖 
+               2 启动类加注解 EnableFeignClients
+			   3 写FeignClient接口 接口上加上注解@FeignClient(name = "product") 确定服务的规则定义在application.yml中
+			   在分布式项目中一般是将暴露接口的一方的接口打成jar包放到项目中，然后使用@EnableFeignClients(basePackages = "com.imooc.product.client")扫描，
+			   然后就可以直接注入了  @Autowired
+									private ProductClient productClient;
+			   **********小坑********
+			   4@EnableFeignClients 在  如下所示的包下
+			   <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+			</dependency>
+		
+声明式REST客户端（伪RPC）
+采用了基于接口的注解
+
+
+**********踩坑*****************
+feign使用注意
+1 如果使用了@RequestBody注解，则必须使用POSTMapping
+2 目前掌握的， PostMapping，要用requestbody才行，
+			   GetMapping，  要用RequestParam注解
+3 
+           

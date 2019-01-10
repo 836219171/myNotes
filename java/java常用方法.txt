@@ -1,0 +1,139 @@
+1  trim.()删除首尾的空格符
+2  substring(参数)是java中截取字符串的一个方法
+3  lastIndexOf() 方法可返回一个指定的字符串值最后出现的位置,在一个字符串中的指定位置从后向前搜索
+4 两个float型计算结果有可能要用double型
+5 2、List list=new ArrayList();
+     list==null list没有初始化
+     list.size()>0为list里面有数据
+6 返回型为多个数组时 先用LIST获取值，然后加入到map里，返回map型数据
+7 使用el表达式的时候 items="这里不能有空格"
+8		/*.assert格式
+
+		（1）assert [boolean 表达式]
+
+		如果[boolean表达式]为true，则程序继续执行。
+		如果为false，则程序抛出AssertionError，并终止执行。
+		（2）assert[boolean 表达式 : 错误表达式 （日志）]
+		如果[boolean表达式]为true，则程序继续执行。
+		如果为false，则程序抛出java.lang.AssertionError，输出[错误信息]。*/
+9   public static native void arraycopy(Object src,  int  srcPos,  
+                                        Object dest, int destPos,  
+                                        int length);  
+    复制指定源数组src到目标数组dest。复制从src的srcPos索引开始，复制的个数是length，复制到dest的索引从destPos开始。
+	
+10  HashSet的add方法实际底层执行的是HashMap的put方法  
+	 public V put(K key, V value) {
+			return putVal(hash(key), key, value, false, true);
+	 }
+     
+	 public V get(Object key) {   
+        if (key == null)  
+            return getForNullKey();  
+        int hash = hash(key.hashCode());  
+        for (Entry<K,V> e = table[indexFor(hash, table.length)];  
+             e != null;  
+             e = e.next) {  
+            Object k;  
+            if (e.hash == hash && ((k = e.key) == key || key.equals(k)))   //这里需要注意，先比较hashcode的值，如果hashcode相等再比较equeals的值。因为hashcode相等不代表为相同对象，
+			                                                                 但是hashcode的比较很快，equeals很耗时，所以用hashcode去掉大部分的比较。
+																			 关于hash值何时相等  标准的基本类型只要值相等，哈希值就相同；
+																			 hashmap数据结构 HashMap采用位桶+链表+红黑树
+																			 Map  -->Entry1-->Entry0
+                return e.value;                                                      Entry0 
+        }                                                                            Entry0
+		                                                                       每一次put相等于加入一个entry ，叫做链表散列的数据结构 entry[]是一个数组
+																			     if (entry.hashCode == hashCode && isEqualKey(key, entry.key)) {比较的是entry的内存地址和key的内存地址
+																				  protected boolean isEqualKey(Object key1, Object key2) { //比较的是hashcode的内存地址
+                                                                                   return (key1 == key2 || key1.equals(key2));  // ==比较的是内存地址。
+
+        return null;  
+    } 
+	
+	final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+        Node<K,V>[] tab; Node<K,V> p; int n, i;
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+        if ((p = tab[i = (n - 1) & hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node<K,V> e; K k;
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                e = p;
+            else if (p instanceof TreeNode)
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+        if (++size > threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;                            //这个是jdk1.8的方法，所以比较复杂，如果大于8个元素时会转换成红黑树结构
+    }
+    HashMap之再理解
+
+11  private static int sumUp( int... values) {} 参数可变的方式
+    等同于在参数中定义一个数组int[] values,但是更加灵活，使用的时候可以按如下sumUp{1,2,3}	
+	
+12 java注解  
+	@Retention：注解的保留位置　　　　　　　　　
+
+　　　　　　@Retention(RetentionPolicy.SOURCE)   //注解仅存在于源码中，在class字节码文件中不包含
+　　　　　　@Retention(RetentionPolicy.CLASS)     // 默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，
+　　　　　　@Retention(RetentionPolicy.RUNTIME)  // 注解会在class字节码文件中存在，在运行时可以通过反射获取到
+　　
+　　@Target:注解的作用目标
+　　　　　　　　
+　　　　　　　　@Target(ElementType.TYPE)   //接口、类、枚举、注解
+　　　　　　　　@Target(ElementType.FIELD) //字段、枚举的常量
+　　　　　　　　@Target(ElementType.METHOD) //方法
+　　　　　　　　@Target(ElementType.PARAMETER) //方法参数
+　　　　　　　　@Target(ElementType.CONSTRUCTOR)  //构造函数
+　　　　　　　　@Target(ElementType.LOCAL_VARIABLE)//局部变量
+　　　　　　　　@Target(ElementType.ANNOTATION_TYPE)//注解
+　　　　　　　　@Target(ElementType.PACKAGE) ///包   
+ 
+    @Document：说明该注解将被包含在javadoc中
+ 
+　  @Inherited：说明子类可以继承父类中的该注解
+	@SuppressWarnings。该批注的作用是给编译器一条指令，告诉它对被批注的代码元素内部的某些警告保持静默
+
+13 java的PriorityQueue默认是最小堆  
+14 又学到一招，自定义比较器，通过自定义比较器，可以在不修改内置类的情况下增加一种新的比较方式。
+15 一般情况下内部类只使用一次的时候，使用匿名内部类来简化代码，更加优雅。
+16 final修饰的变量是指引用不能变，但是引用指向的变量可以变
+17 pojo枚举类，属性若是为枚举，默认读取枚举类中第一个属性
+
+
+
+
+
+
+
+
+
+
+
+
+

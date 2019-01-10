@@ -1,0 +1,492 @@
+建表
+USE practice
+SET NAMES utf8;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+--  Table structure for `class`
+-- ----------------------------
+DROP TABLE IF EXISTS `class`;
+CREATE TABLE `class` (
+  `cid` INT(11) NOT NULL AUTO_INCREMENT,
+  `caption` VARCHAR(32) NOT NULL,
+  PRIMARY KEY (`cid`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `class`
+-- ----------------------------
+BEGIN;
+INSERT INTO `class` VALUES ('1', '三年二班'), ('2', '三年三班'), ('3', '一年二班'), ('4', '二年九班');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `course`
+-- ----------------------------
+DROP TABLE IF EXISTS `course`;
+CREATE TABLE `course` (
+  `cid` INT(11) NOT NULL AUTO_INCREMENT,
+  `cname` VARCHAR(32) NOT NULL,
+  `teacher_id` INT(11) NOT NULL,
+  PRIMARY KEY (`cid`),
+  KEY `fk_course_teacher` (`teacher_id`),
+  CONSTRAINT `fk_course_teacher` FOREIGN KEY (`teacher_id`) REFERENCES `teacher` (`tid`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `course`
+-- ----------------------------
+BEGIN;
+INSERT INTO `course` VALUES ('1', '生物', '1'), ('2', '物理', '2'), ('3', '体育', '3'), ('4', '美术', '2');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `score`
+-- ----------------------------
+DROP TABLE IF EXISTS `score`;
+CREATE TABLE `score` (
+  `sid` INT(11) NOT NULL AUTO_INCREMENT,
+  `student_id` INT(11) NOT NULL,
+  `course_id` INT(11) NOT NULL,
+  `num` INT(11) NOT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `fk_score_student` (`student_id`),
+  KEY `fk_score_course` (`course_id`),
+  CONSTRAINT `fk_score_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`cid`),
+  CONSTRAINT `fk_score_student` FOREIGN KEY (`student_id`) REFERENCES `student` (`sid`)
+) ENGINE=INNODB  DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `score`
+-- ----------------------------
+BEGIN;
+INSERT INTO `score` VALUES ('1', '1', '1', '10'), ('2', '1', '2', '9'), ('5', '1', '4', '66'), ('6', '2', '1', '8'), ('8', '2', '3', '68'), ('9', '2', '4', '99'), ('10', '3', '1', '77'), ('11', '3', '2', '66'), ('12', '3', '3', '87'), ('13', '3', '4', '99'), ('14', '4', '1', '79'), ('15', '4', '2', '11'), ('16', '4', '3', '67'), ('17', '4', '4', '100'), ('18', '5', '1', '79'), ('19', '5', '2', '11'), ('20', '5', '3', '67'), ('21', '5', '4', '100'), ('22', '6', '1', '9'), ('23', '6', '2', '100'), ('24', '6', '3', '67'), ('25', '6', '4', '100'), ('26', '7', '1', '9'), ('27', '7', '2', '100'), ('28', '7', '3', '67'), ('29', '7', '4', '88'), ('30', '8', '1', '9'), ('31', '8', '2', '100'), ('32', '8', '3', '67'), ('33', '8', '4', '88'), ('34', '9', '1', '91'), ('35', '9', '2', '88'), ('36', '9', '3', '67'), ('37', '9', '4', '22'), ('38', '10', '1', '90'), ('39', '10', '2', '77'), ('40', '10', '3', '43'), ('41', '10', '4', '87'), ('42', '11', '1', '90'), ('43', '11', '2', '77'), ('44', '11', '3', '43'), ('45', '11', '4', '87'), ('46', '12', '1', '90'), ('47', '12', '2', '77'), ('48', '12', '3', '43'), ('49', '12', '4', '87'), ('52', '13', '3', '87');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `student`
+-- ----------------------------
+DROP TABLE IF EXISTS `student`;
+CREATE TABLE `student` (
+  `sid` INT(11) NOT NULL AUTO_INCREMENT,
+  `gender` CHAR(1) NOT NULL,
+  `class_id` INT(11) NOT NULL,
+  `sname` VARCHAR(32) NOT NULL,
+  PRIMARY KEY (`sid`),
+  KEY `fk_class` (`class_id`),
+  CONSTRAINT `fk_class` FOREIGN KEY (`class_id`) REFERENCES `class` (`cid`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `student`
+-- ----------------------------
+BEGIN;
+INSERT INTO `student` VALUES ('1', '男', '1', '理解'), ('2', '女', '1', '钢蛋'), ('3', '男', '1', '张三'), ('4', '男', '1', '张一'), ('5', '女', '1', '张二'), ('6', '男', '1', '张四'), ('7', '女', '2', '铁锤'), ('8', '男', '2', '李三'), ('9', '男', '2', '李一'), ('10', '女', '2', '李二'), ('11', '男', '2', '李四'), ('12', '女', '3', '如花'), ('13', '男', '3', '刘三'), ('14', '男', '3', '刘一'), ('15', '女', '3', '刘二'), ('16', '男', '3', '刘四');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `teacher`
+-- ----------------------------
+DROP TABLE IF EXISTS `teacher`;
+CREATE TABLE `teacher` (
+  `tid` INT(11) NOT NULL AUTO_INCREMENT,
+  `tname` VARCHAR(32) NOT NULL,
+  PRIMARY KEY (`tid`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `teacher`
+-- ----------------------------
+BEGIN;
+INSERT INTO `teacher` VALUES ('1', '张磊老师'), ('2', '李平老师'), ('3', '刘海燕老师'), ('4', '朱云海老师'), ('5', '李杰老师');
+COMMIT;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+
+
+
+*********************题目*************************
+
+
+
+
+
+
+
+SELECT * FROM student
+# **********1**********
+#查询“生物”课程比“物理”课程成绩高的所有学生姓名；
+SELECT D.sname FROM 
+(SELECT A.student_id FROM
+(SELECT sc.student_id,sc.num FROM score sc LEFT JOIN course co ON sc.course_id =co.cid
+WHERE co.cname = '生物') A 
+INNER JOIN
+(SELECT sc.student_id wuli_id ,sc.num wuli_num FROM score sc LEFT JOIN course co ON sc.course_id =co.cid
+WHERE co.cname = '物理') B
+ON A.student_id = B.wuli_id WHERE A.num>B.wuli_num )E
+INNER JOIN student D ON E.student_id=D.sid
+
+#*********2***********
+#查询平均成绩大于60分的同学的学号和平均成绩； 
+SELECT sc.student_id,st.sname,AVG(sc.num) avnum FROM score sc 
+INNER JOIN student st 
+ON st.sid =sc.student_id
+GROUP BY sc.student_id
+HAVING avnum>=60
+
+#**********3*************
+#查询所有同学的学号、姓名、选课数、总成绩；
+
+SELECT st.sid ID,st.sname NAME  ,SUM(sc.num) AS '选课数',COUNT(sc.course_id) AS'总成绩'
+FROM student st 
+LEFT JOIN score sc ON st.sid = sc.student_id
+INNER JOIN course co ON sc.course_id= co.cid
+GROUP BY sc.student_id
+
+#4 查询姓“李”的老师的个数；
+
+SELECT COUNT(*)  FROM teacher te
+WHERE tname  LIKE '李%'
+
+#5 查询没学过“李平”老师课的同学的学号、姓名；
+SELECT student.`sid`,student.`sname` FROM student WHERE student.`sid`NOT IN
+(SELECT st.sid FROM student st
+INNER JOIN score sc ON st.sid = sc.student_id
+WHERE sc.course_id  IN( 
+SELECT co.cid FROM teacher te 
+INNER JOIN course co ON co.cid = te.tid
+WHERE te.tname  LIKE '李平%')
+GROUP BY st.sid
+)
+
+#7查询学过“1”并且也学过编号“2”课程的同学的学号、姓名；
+#注意不能直接 where courseid =1 and courseid =2这种，要用 between and
+# 同时满足的话再求count
+SELECT A.sid,A.sname FROM (
+SELECT st.sid,st.sname FROM student st
+INNER JOIN score sc ON st.sid = sc.student_id
+WHERE sc.course_id BETWEEN 1 AND 2 ) A
+GROUP BY A.sid
+HAVING COUNT(A.sid)=2
+
+
+#8 查询学过“李平”老师所教的所有课的同学的学号、姓名；
+#重点理解 '所有课'这三个字
+
+SELECT st.sid,st.sname FROM student st
+INNER JOIN score sc ON st.sid = sc.student_id
+WHERE sc.course_id IN (
+SELECT co.cid FROM teacher te 
+INNER JOIN course co ON co.teacher_id = te.tid
+WHERE te.tname LIKE '李平%')
+GROUP BY st.sid 
+HAVING COUNT(st.sid) =2
+
+#9 查询课程编号“2”的成绩比课程编号“1”课程低的所有同学的学号、姓名；
+SELECT st.sid,st.sname FROM (
+SELECT A.student_id FROM 
+(SELECT sc.student_id,sc.num FROM score sc
+WHERE sc.course_id =1) A
+INNER JOIN 
+(SELECT sc.student_id,sc.num FROM score sc
+WHERE sc.course_id =2) B
+ON A.student_id = B.student_id
+WHERE A.num > B.num) C
+INNER JOIN student st
+ON C.student_id =st.sid
+
+#10 查询有课程成绩小于60分的同学的学号、姓名；
+
+SELECT st.sid,st.sname FROM student st
+INNER JOIN score sc ON sc.student_id = st.sid
+WHERE sc.num <60
+GROUP BY sc.student_id
+
+#11 查询没有学全所有课的同学的学号、姓名；
+SELECT st.`sid`,st.`sname` FROM student st
+WHERE st.`sid` IN (
+SELECT sc.student_id FROM course co 
+INNER JOIN score sc ON sc.`course_id`=co.`cid`
+GROUP BY sc.`student_id`
+HAVING COUNT(sc.`course_id`)<(SELECT COUNT(*) FROM course))
+
+#12 查询至少有一门课与学号为“1”的同学所学相同的同学的学号和姓名；
+#注意把自己排除
+SELECT student.sid,student.`sname` FROM (
+SELECT score.student_id FROM score
+WHERE score.course_id IN(
+SELECT sc.course_id FROM student st
+INNER JOIN score sc ON st.`sid`= sc.student_id
+WHERE st.`sid`=1)
+GROUP BY score.`student_id`) A
+INNER JOIN student ON A.student_id = student.`sid` AND student.`sid`<>1
+
+#13  查询至少学过学号为“1”同学所选课程中任意一门课的其他同学学号和姓名；
+   SELECT student.sid,student.sname FROM student WHERE student.sid IN 
+        (SELECT score.student_id FROM score WHERE course_id IN 
+            (SELECT score.course_id FROM score WHERE student_id=1) AND student_id !=1 GROUP BY student_id 
+                HAVING COUNT(1) =(SELECT COUNT(score.course_id) FROM score WHERE student_id=1));
+                
+#14 查询和“2”号的同学学习的课程完全相同的其他同学学号和姓名；
+#没看懂，最外层为什么又判断一次count
+SELECT sid AS 学号,sname AS 姓名 FROM student WHERE sid IN(
+SELECT student_id FROM score WHERE student_id IN (
+SELECT student_id FROM score WHERE student_id!=2 GROUP BY student_id 
+ HAVING COUNT(1)=(SELECT COUNT(1) FROM score WHERE student_id=2))
+ AND course_id IN (SELECT course_id FROM score WHERE student_id=2) 
+GROUP BY student_id HAVING COUNT(1)=(SELECT COUNT(1) FROM score WHERE student_id=2))
+   
+
+
+
+#14查询和“002”号的同学学习的课程完全相同的其他同学学号和姓名；
+SELECT score.student_id  FROM score 
+WHERE score.course_id IN (
+SELECT sc.course_id FROM score sc
+WHERE sc.`student_id`=2)
+GROUP BY score.student_id 
+HAVING COUNT(*) = (SELECT COUNT(*) FROM score WHERE score.`student_id`=2)
+AND score.`student_id`IN (
+SELECT student_id FROM score 
+WHERE student_id<>2
+GROUP BY student_id 
+HAVING COUNT(*)=(SELECT COUNT(*) FROM score WHERE student_id=2))
+
+#15删除学习“李平”老师课的SC表记录；
+DELETE FROM score   WHERE course_id IN (
+SELECT co.cid FROM teacher te 
+INNER JOIN course co ON te.tid = co.teacher_id
+WHERE te.tname LIKE '李平%')
+
+#16、向SC表中插入一些记录，这些记录要求符合以下条件：
+#①没有上过编号“2”课程的同学学号；②插入“2”号课程的平均成绩； 
+#注意语法使用 insert into table select xxx from xxx where xxx
+INSERT INTO score(student_id,course_id,num) 
+SELECT score.student_id,2,(SELECT  AVG(score.num) FROM score WHERE score.course_id=2)
+FROM score WHERE course_id<>2 GROUP BY score.student_id
+
+#17 按平均成绩从低到高显示所有学生的“生物”、“物理”、“体育”三门的课程成绩，
+#按如下形式显示： 学生ID,语文,数学,英语,有效课程数,有效平均分；
+# 题里答案给的不准确，包括下面这个答案，有效课程数不准确，我查的是所有课程的有效数，不是这三种课程的有效数。
+
+
+SELECT sc.student_id 学号,
+(SELECT score.num FROM score INNER JOIN course ON score.course_id = course.cid 
+WHERE score.student_id = 学号 AND course.cname='生物' LIMIT 1) 生物,
+(SELECT score.num FROM score INNER JOIN course ON score.course_id = course.cid 
+WHERE score.student_id = 学号 AND course.cname='物理'LIMIT 1) 物理,
+(SELECT score.num FROM score INNER JOIN course ON score.course_id = course.cid 
+WHERE score.student_id = 学号 AND course.cname='体育'LIMIT 1) 体育,
+COUNT(sc.student_id) 有效课程数,
+AVG(sc.num) 有效平均分
+FROM score sc 
+GROUP BY sc.student_id 
+ORDER BY AVG(sc.num) ASC
+
+
+
+
+#18 查询各科成绩最高和最低的分：以如下形式显示：课程ID，最高分，最低分；
+SELECT co.cid 课程ID,co.cname 课程名称,MAX(sc.num) 最高分,MIN(sc.num) 最低分 FROM course co
+INNER JOIN score sc ON sc.course_id = co.cid
+GROUP BY course_id 
+
+#19 按各科平均成绩从低到高和及格率的百分数从高到低顺序；
+
+SELECT sc.course_id,AVG(sc.num) avenum, ROUND(SUM(CASE WHEN sc.num>60 THEN 1 ELSE 0 END) /COUNT(*)*100,1) 及格率 FROM score sc
+GROUP BY sc.course_id ORDER BY avenum ASC,及格率 DESC 
+
+# 20 课程平均分从高到低显示（现实任课老师）；
+SELECT B.tname,B.cname,C.anum FROM
+(SELECT te.tname,co.cname ,co.cid FROM teacher te 
+INNER JOIN course co ON te.tid = co.teacher_id) B
+INNER JOIN 
+(SELECT sc.course_id,AVG(sc.num) anum FROM score sc
+GROUP BY sc.course_id ORDER BY anum DESC) C
+ON B.cid = C.course_id
+
+# 21 查询各科成绩前三名的记录:(不考虑成绩并列情况) 
+#主要学习这个思路，子查询中可以用外部的条件(in)
+SELECT co.cid AS 课程ID,co.cname 课程,
+(SELECT  sc.num FROM score sc 
+WHERE sc.course_id =co.cid GROUP BY num ORDER BY num DESC LIMIT 1) AS 第一,
+(SELECT  sc.num FROM score sc 
+WHERE sc.course_id =co.cid GROUP BY num ORDER BY num DESC LIMIT 1,1) AS 第二,
+(SELECT  sc.num FROM score sc 
+WHERE sc.course_id =co.cid GROUP BY num ORDER BY num DESC LIMIT 2,1) AS 第三
+FROM course co 
+
+#22 查询每门课程被选修的学生数；
+SELECT co.cname 课程,A.stnum 学生数量 FROM course co
+INNER JOIN  
+(SELECT sc.course_id , COUNT(sc.student_id) AS stnum FROM score sc
+GROUP BY sc.course_id )A
+ON co.cid = A.course_id
+
+#23 查询出只选修了一门课程的全部学生的学号和姓名；
+SELECT st.sid,st.sname FROM student st
+INNER JOIN
+(SELECT sc.student_id FROM score sc
+GROUP BY student_id
+HAVING COUNT(*) =1) A
+ON st.sid = A.student_id
+
+#24 查询男生、女生的人数；
+SELECT gender AS 性别,COUNT(*) AS 数量
+FROM student GROUP BY gender ORDER BY 数量 DESC
+
+#25 查询姓“张”的学生名单；
+SELECT st.sname FROM student st
+WHERE st.sname LIKE '张%'
+ 
+#26 查询同名同姓学生名单，并统计同名人数；    
+SELECT st1.sname AS 名单,COUNT(*) AS 数量 FROM student st1 
+GROUP BY st1.sname
+HAVING COUNT(*)>1
+
+#27 查询每门课程的平均成绩，结果按平均成绩升序排列，平均成绩相同时，按课程号降序排列；
+SELECT co.cid 课程ID,co.cname 课程, B.avenum 平均成绩 FROM course co
+INNER JOIN 
+(SELECT course_id cid, AVG(sc.num) avenum FROM score sc 
+GROUP BY sc.course_id ) B
+ON co.cid = B.cid
+ORDER BY avenum ASC,co.cid DESC
+
+#28 查询平均成绩大于85的所有学生的学号、姓名和平均成绩；
+SELECT st.sid 学号,st.sname 姓名,B.平均成绩 FROM student st
+INNER JOIN 
+(SELECT sc.student_id ,AVG(sc.num) 平均成绩 FROM score sc
+GROUP BY sc.student_id
+HAVING 平均成绩 >60) B
+ON B.student_id = st.sid
+
+
+
+#29 查询课程名称为“数学”，且分数低于60的学生姓名和分数；
+
+SELECT st.sname 姓名,A.num 分数 FROM student st
+INNER JOIN
+(SELECT sc.student_id,sc.num FROM course co 
+INNER JOIN score sc
+ON co.cid = sc.course_id
+WHERE co.cname ='生物' AND sc.num<60) A
+ON A.student_id = st.sid
+
+#30 查询课程编号为3且课程成绩在80分以上的学生的学号和姓名
+
+SELECT st.sid,st.sname FROM student st
+INNER JOIN
+(SELECT sc.student_id FROM score sc 
+WHERE course_id =3 AND sc.num>80 ) A
+ON st.sid = A.student_id
+
+
+#31 求选了课程的学生人数  
+
+SELECT COUNT(sc.student_id) 学生人数 FROM 
+(SELECT student_id FROM score GROUP BY student_id ) sc
+
+
+SELECT COUNT(DISTINCT sc.student_id ) 学生人数 FROM score sc
+
+
+
+#32 查询选修“杨艳”老师所授课程的学生中，成绩最高的学生姓名及其成绩；
+#有问题
+
+SELECT student.sname 姓名,score.num 成绩 FROM score 
+INNER JOIN course  ON score.course_id = course.cid
+INNER JOIN student ON score.student_id = student.sid
+INNER JOIN teacher ON course.teacher_id = teacher.tid
+WHERE teacher.tname LIKE '李平%' ORDER BY score.num DESC LIMIT 1
+
+
+
+#33 查询各个课程及相应的选修人数；
+SELECT co.cname 课程,A.人数 FROM course co
+INNER JOIN
+(SELECT sc.course_id 课程号,COUNT(sc.course_id) 人数 FROM score sc
+GROUP BY sc.course_id ) A
+ON A.课程号 = co.cid
+
+
+#34 查询不同课程但成绩相同的学生的学号、课程号、学生成绩；
+#这道题学到了可以同时from多个表，并且where后面的筛选条件也是值得学习。
+SELECT DISTINCT s1.student_id,s1.course_id FROM score s1,score s2
+WHERE s1.student_id<>s2.student_id AND s1.course_id<>s2.course_id AND s1.num <>s2.num
+
+
+
+#35 查询每门课程成绩最好的前两名；
+SELECT course_id 课程号,
+(SELECT sc.student_id FROM score sc  WHERE sc.course_id = 课程号 ORDER BY sc.num DESC LIMIT 1) 第一名,
+(SELECT sc.student_id FROM score sc  WHERE sc.course_id = 课程号 ORDER BY sc.num DESC LIMIT 1,1) 第二名
+FROM score 
+GROUP BY course_id
+
+
+#36 检索至少选修两门课程的学生学号；
+SELECT sc.student_id  FROM score sc
+GROUP BY sc.student_id 
+HAVING COUNT(sc.course_id)>=2
+
+
+#37 查询全部学生都选修的课程的课程号和课程名；
+
+SELECT sc.course_id FROM score sc
+WHERE sc.student_id IN(
+SELECT st.sid  FROM student st
+)
+GROUP BY sc.course_id
+HAVING COUNT(sc.course_id)=(SELECT COUNT(*) FROM student)
+
+
+#38 查询没学过“李平”老师讲授的任一门课程的学生姓名；
+#学到了in和not in的使用
+SELECT student.sid,student.sname FROM student
+WHERE student.sid NOT IN (SELECT sc.student_id FROM score sc
+WHERE sc.course_id IN(
+SELECT co.cid FROM course co
+INNER JOIN teacher te
+ON te.tid = co.teacher_id
+WHERE te.tname LIKE '李平%') GROUP BY student_id )
+
+
+#39 查询两门以上不及格课程的同学的学号及其平均成绩；
+#这道题答案是错的,另外注意平均成绩这一块容易错
+SELECT sc.student_id 学号,COUNT(*),
+(SELECT AVG(score.num) FROM score WHERE score.student_id = sc.student_id) 平均成绩 
+FROM score sc
+WHERE sc.num < 60 
+GROUP BY sc.student_id
+HAVING COUNT(*)>2
+
+
+#40 检索“4”课程分数小于60，按分数降序排列的同学学号；
+# 答案也错了
+SELECT sc.student_id FROM score sc
+WHERE sc.course_id =4 AND sc.num<60
+GROUP BY sc.student_id
+ORDER BY sc.num DESC
+
+
+#41 删除“2”同学的“1”课程的成绩；
+
+DELETE FROM score sc WHERE sc.course_id =1 AND sc.student_id =2
+
+
+
+
+
+
+
+
+
+
+
+
+
+

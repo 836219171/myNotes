@@ -1,0 +1,26 @@
+1 wget https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm
+2 rpm -Uvh mysql57-community-release-el6-9.noarch.rpm 
+3 yum localinstall -y mysql57-community-release-el6-9.noarch.rpm   
+4 yum install mysql-community-server
+5 service mysqld start
+6 grep 'temporary password' /var/log/mysqld.log  查找密码
+7 mysql -uroot -p 
+8 ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
+
+4.开启远程连接
+设置iptables开放3306端口
+
+vi /etc/sysconfig/iptables
+加入 #-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+进入mysql 
+use mysql
+update user set host = '%' where user ='root';
+flush privileges;
+select host,user from user where user='root';
+quit
+
+安装遇到的问题
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'qinliang';
+
+set global validate_password_policy=0;
+set global validate_password_length=4;

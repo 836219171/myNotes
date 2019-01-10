@@ -1,0 +1,18 @@
+centos 7默认使用的是firewall防火墙，使用jredis时要关闭它
+systemctl stop firewalld.service #停止firewall
+systemctl disable firewalld.service #禁止firewall开机启动
+查看一个软件是否启动起来 ps -ef|grep xxx
+
+
+/data/service/conf/nginx/nginx.conf
+/data/service/service/conf/nginx/nginx.conf
+/data/service/service/test/conf/nginx/nginx.conf
+/data/service/service/prod/conf/nginx/nginx.conf
+/data/service/mfav-robot/conf/nginx/nginx.conf
+/data/docker/overlay2/c4d8f437418e169740234fad6b746d3efc6365e2038ff58c12826431d1554bba/diff/etc/nginx/nginx.conf
+/data/docker/overlay2/6bbcbf3e47129e0daacbd535a2d4e739772c214056ecbd0b9bf353911fe6e6ce/diff/etc/nginx/nginx.conf
+/data/docker/overlay2/b6ff1f221ec06164c43b96378a130be89e063ebc8fa22dd8011cef55110149f3/merged/etc/nginx/nginx.conf
+/data/docker/overlay2/d873f75da2b249dd7d5d5b5b8d3050a2384fb987a43d0636bbf3dfa76c55716c/diff/etc/nginx/nginx.conf
+/data/docker/overlay2/94d7d975d9ceaa244e96012b48a3f7d1bd639e3898922b3c5d41a41f707a6225/diff/etc/nginx.conf
+/data/docker/overlay2/6e801928619fbc04257cd201ab934a05b146d67d0155be67be9caadad448d030/diff/etc/nginx.conf
+/data/docker/overlay2/a3f33b39158900cb7a49a7d844c8cc1b2bebdd0bf6aa40b9afa3d66e2f30cf26/diff/etc/nginx/nginx.conf

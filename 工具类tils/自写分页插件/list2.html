@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="${PATH}/css/XLtable.css">
+    <title>分页插件</title>
+
+</head>
+<body>
+
+    <table class="mytable mytable-bordered mytable-condensed">
+        <thead>
+        <tr>
+            <th>订单id</th>
+            <th>姓名</th>
+            <th>手机号</th>
+            <th>地址</th>
+            <th>金额</th>
+            <th>订单状态</th>
+            <th>支付状态</th>
+            <th>创建时间</th>
+        </tr>
+        </thead>
+        <tbody id="dataBody">
+        </tbody>
+    </table>
+    <div id="XLPageDiv"  style="width: 100%;height: 35px;line-height: 35px;  float: left" >
+
+    </div>
+
+<script type="text/javascript" src="${PATH}/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="${PATH}/js/XLPage.js"></script>
+<script type="text/javascript">
+
+$(function () {
+    //返回到前端的实体属性，用数组表示
+    fields = ["orderId", "buyerName", "buyerPhone", "buyerAddress", "orderAmount", "orderStatus", "payStatus", "createTime"];
+    mytype = "GET";//GET 或者POST
+    //请求路径
+    myurl = "${PATH}/page/list";
+    //这两个变量必须有
+    var defaultPage = 1 ;
+    var defaultSize = 5;
+   /* 渲染 必须进行*/
+    XLrender();
+    getTable(defaultPage, defaultSize, fields, mytype, myurl);
+    /* 显示选择条数 true 显示  false 不显示*/
+    getSelect(true);
+    /*跳转指定页面  true 显示  false 不显示*/
+    getJumpPageContent(true);
+});
+</script>
+
+</body>
+</html>

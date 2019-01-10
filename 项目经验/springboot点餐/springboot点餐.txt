@@ -1,0 +1,232 @@
+1 有时不要返回给前端多余的信息，出于安全的考虑。
+2 使用JsonProperty注解，注解可以将返回给前端的属性名变为name，建立一种映射关系    @JsonProperty("name")     private String cateName;
+3 组合数据时，将一个对象有的属性复制到另一个对象的属性里，用BeanUtils.("source","target"); 
+4 单个数据可以以链表的形式插入到属性中 用 Arrays.asList(productInfoVO)          
+5 存在bug，若是热销榜不存在，则所有数据无法显示     
+6 自定义异常    继承RuntimeException  构造方法传入msg   super(msg)
+7 springMVC接收参数时，javabean属性对应的时候要用@Valid注解校验是否为空，后面可以接BindingResult参数，进行校验是否为空
+   bindingresult.hasErrors就可以知道是否绑定异常，不用自己一个个的去判断
+8 抓包工具 fiddler
+9 在方法中发送http请求可以用 RestTemplate
+  
+10 微信测试账号步骤
+   1.申请测试账号 连接   http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login
+   2.绑定url和token，/*
+   @GetMapping("auth")
+    public String auth(HttpServletRequest request){
+       String token = "sellqin";
+       String signature = request.getParameter("signature");
+       String timestamp = request.getParameter("timestamp");
+       String nonce = request.getParameter("nonce");
+       String echostr = request.getParameter("echostr");
+       log.info("signature="+signature+"timestamp="+timestamp+"nonce="+nonce+"echostr="+echostr);
+       if (signature == null || timestamp == null || nonce == null || echostr == null){
+           throw  new SellException(ResultEnum.WEIXIN_AUTH_ERROR);
+       }
+       String convert[] = {token,timestamp,nonce};
+       List<String> resultList = Arrays.asList(convert);
+       Collections.sort(resultList);
+
+       StringBuilder stringBuilder = new StringBuilder();
+        for (String resultString :
+                resultList) {
+            stringBuilder.append(resultString);
+        }
+        String vertify = SHA1.getSha1(stringBuilder.toString());
+        log.info("echostr="+echostr);
+        log.info("vertify ="+vertify);
+
+        if ( signature.equals(vertify)){
+            return echostr ;
+        }
+        return "";
+    }*/
+	3.微信关注此测试公众号。
+	4.设置回调域名 注意前缀不能有http://，和注册的token的域名一样 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8709f72f4aa10e9b&redirect_uri=http://sellqin.s1.natapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect
+	5.根据回调域名获取code，，进入https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx8709f72f4aa10e9b&secret=31ab11c197878cd53b627ac93ea0b061&code=CODE&grant_type=authorization_code
+	6 根据code获取openid
+	/*********************************应用过程中的几个参数*********************/
+	https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8709f72f4aa10e9b&redirect_uri=http://sellqin.s1.natapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8709f72f4aa10e9b&redirect_uri=http://sellqin.s1.natapp.cc/sell/weixin/auth&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx8709f72f4aa10e9b&secret=31ab11c197878cd53b627ac93ea0b061&code=CODE&grant_type=authorization_code
+
+openid = oZ-ju0jgnoErI4HpR6B9nDbM3Tk0
+<dependency>
+  <groupId>com.github.binarywang</groupId>
+  <artifactId>weixin-java-mp</artifactId>
+  <version>3.0.0</version>
+</dependency>
+
+http://sellqin.s1.natapp.cc/sell/whchat/userInfo?returnUrl=http://www.imooc.com
+
+/*********************************************************************************/
+
+	
+11 金额相比较的时候，不能使用double，在微信支付比较金额的时候不能直接使用new bigdemical的compareTo，用两个金额相减，差值小于0.01，可以算成功
+12 freemarker从1 开始递增分页逻辑
+       <#list 1..orderDTOPage.getTotalPages() as index>
+
+                <#if index == currentPage>
+                    <li class="disabled">
+                        <a href="#">${index}</a>
+                    </li>
+                <#else>
+                    <li>
+                        <a href="#">${index}</a>
+                    </li>
+                </#if>
+                </#list>
+13 freemarker转义 1 用符号代替，> gt, >=  gte ,< lt , <= lte
+                  2 加括号 <#if(x>y)>
+				  
+14 爬虫框架 Nutch，jsoup，heritrix
+15 freemarker默认值 ${msg!""}默认为空    <select name="categoryType" class="form-control">
+										   <#list categoryList as category>
+										<option value="${category.categoryType}"
+											<#if (productInfo.categoryType)?? && productInfo.categoryType == category.categoryType>//如果商品类目存在
+												selected
+											</#if>
+										>${category.categoryName}
+										</option>
+									</#list>
+									</select>
+16分布式系统的三大特点  1.多节点          分布式系统
+                        2.消息通信        集群 通过网络进行消息通信
+                        3.不共享主内存	  分布式计算				
+17 session和token区别
+						登出是指客户端主动退出登录状态。容易想到的方案是，客户端登录成功后， 服务器为其分配sessionId, 客户端随后每次请求资源时都带上sessionId。
+						服务器判断用户是否登录， 完全依赖于sessionId, 一旦其被截获， 黑客就能够模拟出用户的请求。于是我们需要引入token的概念： 用户登录成功后， 服务器不但为其分配了sessionId, 还分配了token， token是维持登录状态的关键秘密数据。在服务器向客户端发送的token数据，也需要加密。于是一次登录的细节再次扩展。
+						客户端向服务器第一次发起登录请求（不传输用户名和密码）。
+						服务器利用RSA算法产生一对公钥和私钥。并保留私钥， 将公钥发送给客户端。
+						客户端收到公钥后， 加密用户密码，向服务器发送用户名和加密后的用户密码； 同时另外产生一对公钥和私钥，自己保留私钥, 向服务器发送公钥； 于是第二次登录请求传输了用户名和加密后的密码以及客户端生成的公钥。
+						服务器利用保留的私钥对密文进行解密，得到真正的密码。 经过判断， 确定用户可以登录后，生成sessionId和token， 同时利用客户端发送的公钥，对token进行加密。最后将sessionId和加密后的token返还给客户端。
+						客户端利用自己生成的私钥对token密文解密， 得到真正的token。
+18	　在使用@Autowired时，首先在容器中查询对应类型的bean
+
+　　　　如果查询结果刚好为一个，就将该bean装配给@Autowired指定的数据
+
+　　　　如果查询的结果不止一个，那么@Autowired会根据名称来查找。
+
+　　　　如果查询的结果为空，那么会抛出异常。解决方法时，使用required=false
+
+19   @Bean是一个方法级别上的注解，主要用在@Configuration注解的类里，也可以用在@Component注解的类里。添加的bean的id为方法名
+20   String.format()用法        String string = "abc";
+								System.out.println(String.format("Hi,%s", string)); //s%表示占位符
+21   清除cookie，new一个新的cookie，键值和原来的相等，然后使过期时间为0或者值设置为null，都可以清除
+22  获取request，response对象的几种方式 1.  参数中获取
+										2.  通过spring提供的RequestContextHolder在非contrller层获取request和response对象
+
+											HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+
+											HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getResponse();
+
+											HttpServletResponse response = ((ServletWebRequest)RequestContextHolder.getRequestAttributes()).getResponse();
+
+											ServletContext context = ContextLoader.getCurrentWebApplicationContext().getServletContext();
+
+23.     异常捕获
+		//注意使用注解@ControllerAdvice作用域是全局Controller范围
+		//可应用到所有@RequestMapping类上或@ExceptionHandler、@InitBinder、@ModelAttribute的方法上，在这里是@ExceptionHandler
+		@ControllerAdvice
+		public class AControllerAdvice {
+			@ExceptionHandler(NullPointerException.class)
+			@ResponseStatus(HttpStatus.BAD_REQUEST)//返回状态吗
+			@ResponseBody
+			public String handleIOException(NullPointerException ex) {
+				return ClassUtils.getShortName(ex.getClass()) + ex.getMessage();
+    }
+}											
+
+24   yml文件中有多个属性的时候，可以起别名，然后对象属性用map接收
+25   事务的又一层理解 加上@Transactional注解后，在本方法中若是有语句发生异常，则可以在另一个方法中try catch掉。然后此语句发生异常就不会影响到本方法的事务回滚
+26   配置websocket步骤  1.客户端，也就是前端上用js+h5写websocket客户端  
+                        2.配置@Bean
+							public ServerEndpointExporter serverEndpointExporter(){
+							return  new ServerEndpointExporter();
+							}
+						3.写websock切面
+						4.在项目中使用
+
+28 java -jar打包方式比打成war包放到tomcat下更加灵活，可以指定参数启动。
+29 centos 7 service centos7提倡的将应用做成系统的服务
+30 ab压力测试命令示例  ab -n 1000 -c 100 http://192.168.245.1:8080/sell/skill/order/1234568 
+                                                                                         1000个请求，100个线程访问的并发 时长0.8s
+27 Redis分布式锁，优点是对数据进行更细粒度的控制，多台机器上多个进程对一个数据进行操作的互斥。
+31 分布式锁的两个命令，setnx，如果锁存在则返回1，如果不存在返回0
+                       getset 先get，再set 
+从效率上来看，未使用分布式锁，上面的压测命令执行时间50s，是本场景不可以接受的，使用分布式锁之后执行时间为0.8秒。
+32 redis分布式锁的问题解决方案，第一步，加锁 。
+    public boolean lock(String key,String value){ //value为当前时间加上一个超时时间的时间戳
+        //上锁
+        if ( redisTemplate.opsForValue().setIfAbsent(key,value)){
+            return true;
+        }
+
+        //两个问题，Q1超时时间 这两个问题是主要要理解的
+        String currentValue = redisTemplate.opsForValue().get(key);
+        if (!StringUtils.isEmpty(currentValue) && Long.parseLong(currentValue) < System.currentTimeMillis()){
+            //Q2 在线程超时的时候，多个线程争抢锁的问题
+            String oldValue = redisTemplate.opsForValue().getAndSet(key, value);
+            if (!StringUtils.isEmpty(oldValue) && oldValue.equals(currentValue)){
+                return true;
+            }
+        }
+        return false;
+
+    }					   
+33 redis分布式锁之解锁   
+       public void unlock(String key ,String value){
+        try{
+            String currentValue = redisTemplate.opsForValue().get(key);
+            if (!StringUtils.isEmpty(currentValue) && currentValue.equals(value)){
+                redisTemplate.opsForValue().getOperations().delete(key); //核心就是将key删除
+            }
+        }catch(Exception e){
+            log.error("redis分布上锁解锁异常, {}",e);
+        }
+
+    }
+	
+34 WebSocketConfig文件的问题，暂时未解决。问题是在测试环境中不能创建serverEndpointExporter的Bean，暂时想到的原因是springboot-test的环境里面没有socket这个jar包，所以无法创建
+   暂时的解决办法是将@bean注解先去掉再测试，测试完再加上
+   
+35 在spring中使用spring-data-redis的时候，若是想自动注入的话使用  
+																	@Autowired
+																	private StringRedisTemplate redisTemplate;
+36  StringRedisTemplate和RedisTemplate区别和联系
+总结了一下区别和联系主要有四点：
+
+第一点，StringRedisTemplate继承了RedisTemplate。
+
+第二点，RedisTemplate是一个泛型类，而StringRedisTemplate则不是。
+
+第三点，StringRedisTemplate只能对key=String，value=String的键值对进行操作，RedisTemplate可以对任何类型的key-value键值对操作。
+
+第四点，是他们各自序列化的方式不同，但最终都是得到了一个字节数组，殊途同归，StringRedisTemplate使用的是StringRedisSerializer类；RedisTemplate使用的是JdkSerializationRedisSerializer类。反序列化，则是一个得到String，一个得到Object
+在Boot环境下使用set的时候，注意序列化的问题，需要配置一下
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+																	

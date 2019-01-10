@@ -1,0 +1,107 @@
+1 spring中Bean的作用域。
+singleton：单例，指一个Bean容器只能存在一份。
+2 prototype（原型） 每次请求都创建新的实例，destroy方式不生效
+3 request 每次http请求创建一个实例且仅在当前request内有效
+4 session 每次http请求创建一个实例且仅在当前session内有效
+5 @Autowired适用于fields，constructors，muti-argumentmethods，这些参数允许在参数级别使用@Qualifier注解缩小范围的情况
+6 @Resources适用于成员变量，只有一个参数的setter方法，所以在目标是构造器或一个多参数方法时，最好的方式是使用@Qualifier注解
+  @Qualifier可以指定应该使用的bean的名字，主要解决的问题是指定应该使用的bean的名字，
+  @Primary是用来标记组件的bean，表示出现多个复合依赖的候选bean的时候优先使用它
+  @Autowired
+    public Boss(Car car , @Qualifier("office")Office office){
+        this.car = car;
+        this.office = office ;
+	}
+
+
+7 spring AOP两种实现方式，一种是预编译，一种是运行期动态代理
+8 name-pattern:指定方法名,*代表所以,set*,代表以set开头的所有方法.
+
+	  parameters pattern:指定方法参数(声明的类型),(..)代表所有参数,(*)代表一个参数,(*,String)代表第一个参数为任何值,第二个为String类型.
+
+	  举例说明: 
+
+	  任意公共方法的执行：
+
+	  execution(public * *(..))
+
+	  任何一个以“set”开始的方法的执行：
+
+	  execution(* set*(..))
+
+	  AccountService 接口的任意方法的执行：
+
+	  execution(* com.xyz.service.AccountService.*(..))
+
+	  定义在service包里的任意方法的执行：
+
+	  execution(* com.xyz.service.*.*(..))
+ 
+	  定义在service包和所有子包里的任意类的任意方法的执行：
+
+	  execution(* com.xyz.service..*.*(..))
+9	spring事务比较详细的介绍，有时间看看 https://blog.csdn.net/u013142781/article/details/50421904
+10  Spring使用声明式事务处理，默认情况下，如果被注解的数据库操作方法中发生了unchecked异常，所有的数据库操作将rollback；
+    如果发生的异常是checked异常，默认情况下数据库操作还是会提交的。
+11  REQUIRED：如果存在一个事务，则支持当前事务。如果没有事务则开启一个新的事务。
+
+	SUPPORTS： 如果存在一个事务，支持当前事务。如果没有事务，则非事务的执行。但是对于事务同步的事务管理器，PROPAGATION_SUPPORTS与不使用事务有少许不同。
+
+	NOT_SUPPORTED：总是非事务地执行，并挂起任何存在的事务。
+
+	REQUIRESNEW：总是开启一个新的事务。如果一个事务已经存在，则将这个存在的事务挂起。
+
+	MANDATORY：如果已经存在一个事务，支持当前事务。如果没有一个活动的事务，则抛出异常。
+
+	NEVER：总是非事务地执行，如果存在一个活动事务，则抛出异常
+
+	NESTED：如果一个活动的事务存在，则运行在一个嵌套的事务中。如果没有活动事务，则按REQUIRED属性执行。
+	
+12 spring容器事务必须使用接口注入
+13 在webservice层管理事务时，需要把业务层单独提出来进行事务管理，webserice相当于controller。
+14 接触学习Spring一段时间了，今天突然脑子短路，竟然一时间忘记了构造函数，init-method，和依赖注入的先后顺序，然后打开IDE去验证后。
+   构造函数-->依赖注入-->init-method，注意的一点是只有一个类完整的实例被创建出来后，才能走初始化方法。
+15 一、@Value注解两种使用方法
+
+		1、@Value("#{configProperties['key']}")
+
+		2、@Value("${key}")
+配置方法1：  
+<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">  
+    <property name="locations">  
+        <list>  
+            <value>classpath:value.properties</value>  
+        </list>  
+    </property>  
+</bean>  
+配置方法2：  
+<util:properties id="configProperties" location="classpath:value.properties"></util:properties>  
+代码中如下
+@Component  
+public class ValueDemo {  
+    @Value("#{configProperties['key']}")  
+    private String value;  
+  
+    public String getValue() {  
+        return value;  
+    }  
+}  
+1 问题，如何知道bean的实例化加载顺序
+https://blog.csdn.net/qq_27529917/article/details/79329809
+
+2 IOC的实例化过程，如何通过设计模式将解析和注入的代码分离开
+https://blog.csdn.net/lisongjia123/article/details/52129340
+
+3 autowired 注解
+
+使用 https://www.cnblogs.com/caoyc/p/5626365.html
+https://blog.csdn.net/mack415858775/article/details/47721909
+
+4 service 等注解注入的时候的细节
+https://blog.csdn.net/u013734073/article/details/51226588
+
+
+@Import注解就是之前xml配置中的import标签，可以用于依赖第三方包中bean的配置和加载
+
+在列表中，@Import 是被用来整合所有在@Configuration注解中定义的bean配置。这其实很像我们将多个XML配置文件导入到单个文件的情形。
+@Import注解实现了相同的功能。本文会介绍使用@Import注解来导入spring工程中的JavaConfig文件.

@@ -1,0 +1,56 @@
+1	spu和sku  比如，在亚马逊，SPU被称为父产品，SKU被称为子产品。意思是不同SKU产品之间，会有父产品的共同属性，但又因为规格、属性、尺码等不同而成为单独的产品，
+          每个子产品之间，都是一个独立的产品。
+		  
+2	当几个页面之间传递的值为汉字时必须用modelandview。
+
+		attrServiceImp.save_attr(list_attr.getList_attr(), class_2_id);
+		ModelAndView modelAndView = new ModelAndView("redirect:/goto_attr_add.do");
+		modelAndView.addObject("class_2_id", class_2_id);
+		modelAndView.addObject("class_2_name", class_2_name);
+		return modelAndView;
+		
+3   当业务层执行插入操作时，必须使用重定向。
+
+4   form表单下的按钮在没有指定type类型的时候，如果我们同时给其添加了点击事件的话。会发现我们在点击的时候回默认的把表单也给提交了
+5   button的name属性默认是string类型，转化为int型的时候用parseInt(name)可以
+6	mysql的tempstamp时间戳，默认自动添加时间
+	参照这个就行了，这个对应注入类型。
+	===========java注入数据库==========
+	java类型   mysql类型        成功与否
+	date         date               yes
+	date         time               no
+	date         timestamp       no
+	date         datetime         no
+	time         date               no
+	time         time               yes
+	time         timestamp       no
+	time         datetime         no
+	timestamp date              yes
+	timestamp time              yes
+	timestamp timestamp     yes
+	timestamp datetime        yes
+	==========end java注入数据库========
+	总规律，如果A完全包含B，则A可以向B注入数据，否则报错
+	==========从数据库提取到java ==========
+	mysql类型    java类型     成与否
+	date             date         yes
+	date             time         yes --------------缺少的部分使用历元
+	date           timestamp   yes --------------缺少的部分使用历元  
+	time           date           yes --------------缺少的部分使用历元
+	time           time           yes
+	time          timestamp    yes --------------缺少的部分使用历元
+	timestamp date           yes
+	timestamp time           yes
+	timestamp timestamp   yes
+	datetime      date         yes
+	datetime      time         yes
+	datetime    timestamp   yes
+	==========end 从数据库提取到java=======
+	不会出错，缺少的部分使用历元，而不是当前日期时间
+	
+7   可以用ajax来异步加载页面，然后嵌套在主页面 ，达到局部刷新的目的。
+8    eclipse open call hierarchy  查看层级调用
+9    ajax返回中文时添加的produces="text/html;charset=UTF-8"这个相当于返回参数的意思。
+      还有一种写法是consumes，参数的意思。
+	  
+10  JVM的双亲委派机制和沙箱机制 

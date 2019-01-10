@@ -1,0 +1,46 @@
+hibernate5.0以后创建SessionFactory的方法
+  User a = new User();
+		  a.setId(3);
+		  a.setUsername("qin");
+		  a.setPassword("liang");
+	        StandardServiceRegistry registry = null;
+	        SessionFactory sessionFactory = null;
+	            registry = new StandardServiceRegistryBuilder().configure().build();
+	            //不指定文件名默认是找hibernate.cfg.xml文件
+	            //registry = new StandardServiceRegistryBuilder().configure().build(); 
+	            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+	            Session session = sessionFactory.openSession();
+	            session.beginTransaction();
+	            session.save(a);
+	            session.getTransaction().commit();
+	            session.close();
+	            sessionFactory.close();
+使用注解方式配置时
+<property name="packagesToScan">  
+    <list>  
+         <!-- 可以加多个包 -->  
+         <value>com.zjt.entity</value>  
+    </list>  
+</property> 
+使用配置文件时
+<property name="mappingDirectoryLocations">  
+    <list>  
+        spring容器会去该包及子包下搜索所有的映射文件  
+        <value>classpath:com/zjt/entity</value>  
+    </list>  
+</property>  
+一定要注意事务冲突
+1 比如两个方法中的Query query（不能一样）
+2 报错为Could not obtain transaction-synchronized Session for current thread
+3  获取连接工厂 
+@Autowired
+	private SessionFactory sessionFactory;
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+4  获取session对象   Session session = sessionFactory.openSession();

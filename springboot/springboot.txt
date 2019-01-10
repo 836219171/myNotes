@@ -1,0 +1,72 @@
+我的AppId      wx1053b7580155aa84
+    AppSecret  ef173451098e2bc975b641347115612f
+	natapp     http://sellqin.s1.natapp.cc
+
+1 springboot 默认不支持 jsp 需要加入以下依赖和配置
+2 spring.mvc.view.prefix=/WEB-INF/views/
+
+3 spring.mvc.view.suffix=.jsp
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <version>4.6.1</version>
+            <scope>provided</scope>
+        </dependency>
+4 目前快速建立的版本为2.0.2
+5 要在启动类上加上注解MapperScan(mapper对应的包)
+6 spring boot 默认启动时根路径为/ ，若是要带上项目名称的话需要在application.properties中加入  server.context-path=/spring-boot-leave
+7 拆分父子项目
+	1 父项目的pom文件打包方式变为pom 主要的作用就是控制版本
+	2 父项目中的groupId为公用的，子项目中不需要写
+	3 父项目的中加入modules
+		<modules>
+		<module>common</module>
+	    </modules>
+	4 版本管理通过 dependencyManagement   	
+	       <dependency>
+				<groupId>com.imooc</groupId>
+				<artifactId>product-common</artifactId>
+				<version>${product-common.version}</version>
+			</dependency>
+			然后在propeities中加入 		<product-common.version>0.0.1-SNAPSHOT</product-common.version>
+	
+	5 子项目操作  按需求加入依赖  副项目的依赖必须加      	
+	<parent>
+		<groupId>com.imooc</groupId>
+		<artifactId>product</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	********************************************这里踩坑了问题主要是在springboot下的maven有一个自带的插件，这个插件会去寻找打包的项目的启动类，但是我把启动类删除掉了，
+	********************************************解决办法是把这个插件注释掉，以后要是用的到再恢复
+	6 用命令打包成jar包 mvn -Dmaven.test.skip=true -U clean install  
+
+8	@ConfigurationProperties结合@EnableAutoConfiguration(启动类上添加该注解),会自动将属性配置文件转换成java bean,并会向spring中注入该bean,
+	并以prefix+类的名称作为bean的名称
+
+9	@Bean理解为<bean>标签   @Configuration理解为<beans>
+10  @ConditionalOnClass({HttpClient.class})在xxx.class存在的时候才加载此配置
+
+11	自己对于配置目前的理解，不知道对不对。首先写上一个@ConfigurationProperties(prefix = "xxx")表示这个类可以在properties里面注册并且接收用户自定义配置的内容。
+	然后在想要实例化某个对象的时候可以将该对象引入，通过@bean注解返回该对象。@ConditionalOnClass注解可以解决我之前的websocket不能单元测试的配置问题。
+	
+12 springboot启动时默认会去加载springboot-wen-autoconfigrue里面的spring.factories，默认情况下扫描的路径是启动类所在的包，
+	如果想要修改路径需要在resources/META-INF/下面写一个spring.factories覆盖即可。
+	或者自定义注解来寻找该配置类
+	
+13 最新的理解 关于配置 @CongurationProperties和 @Value的区别就是前者可以指定前缀后直接绑定类 后者是绑定到具体参数上比较麻烦 如果想要指定另一个配置文件中可以用
+	@ProperSource
+	
+	最最新的理解，@CongurationProperties有两个作用，
+	1 ：一个是将class文件和propertie互相绑定，
+	2 ：另外一个是指定前缀后，可以将properties文件中定义的属性自动注入
+	如果想要将@CongurationProperties注解的bean放到
+	
+14 记录一次xml转为springboot的bean的过程
+有参考价值的博客
+https://blog.csdn.net/u013423085/article/details/82872533#proxyMode_33

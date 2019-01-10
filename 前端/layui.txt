@@ -1,0 +1,4 @@
+1 使用layer时应该使用其内部jquery 要不然会起冲突 加入如下两句话
+var $ = layui.jquery, 
+layer = layui.layer; //独立版的layer无需执行这一句
+2 layer子父窗口可以传值，根据dom来求，ingqie onclick方法里面可以通过this获取元素的值

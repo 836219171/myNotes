@@ -1,0 +1,108 @@
+Docker的优点，弹性伸缩，横向扩展。
+Docker的三大部分，仓库 镜像 容器
+具体执行过程为：
+1. build  构建镜像 
+1. ship   从仓库把镜像拉到本地    
+2. run    在本地将镜像变成容器
+
+linux下docker安装  链接：https://www.imooc.com/article/16448
+内容：
+
+1.检查内核版本，返回的值大于3.10即可。
+$ uname -r
+2.使用 sudo 或 root 权限的用户登入终端。
+
+3.卸载旧版本(如果安装过旧版本的话)
+
+$ yum remove docker \
+      docker-common \
+      docker-selinux \
+      docker-engine
+4.安装需要的软件包
+
+#yum-util提供yum-config-manager功能
+#另外两个是devicemapper驱动依赖的
+$ yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+5.设置yum源
+
+$ yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+6.安装docker
+
+6.1. 安装最新版本
+
+$ yum install -y docker-ce
+6.2. 安装指定版本
+
+#查询版本列表
+$ yum list docker-ce --showduplicates | sort -r
+已加载插件：fastestmirror, langpacks
+已安装的软件包
+可安装的软件包
+ * updates: mirrors.163.com
+Loading mirror speeds from cached hostfile
+ * extras: mirrors.163.com
+docker-ce.x86_64            17.09.1.ce-1.el7.centos            docker-ce-stable
+docker-ce.x86_64            17.09.0.ce-1.el7.centos            docker-ce-stable
+...
+#指定版本安装(这里的例子是安装上面列表中的第二个)
+$ yum install -y docker-ce-17.09.0.ce
+7.启动docker
+
+$ systemctl start docker.service
+7.验证安装是否成功(有client和service两部分表示docker安装启动都成功了)
+
+$ docker version
+Client:
+ Version:      17.09.0-ce
+ API version:  1.32
+ Go version:   go1.8.3
+ Git commit:   afdb6d4
+ Built:        Tue Sep 26 22:41:23 2017
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      17.09.0-ce
+ API version:  1.32 (minimum version 1.12)
+ Go version:   go1.8.3
+ Git commit:   afdb6d4
+ Built:        Tue Sep 26 22:42:49 2017
+ OS/Arch:      linux/amd64
+ Experimental: false
+
+docker命令 
+1 docker pull[options] name[:TAG] (指定版本，可以不写默认拉取最新镜像)      
+2 docker images[options] [repository[:TAG]] 验证我们有哪些镜像，也可以验证pull是否成功
+3 docker run[options] image[:TAG] [command] [arg]  运行时要执行哪些命令以及参数         [:options]
+
+exec进入容器命令 
+[root@bogon /]# docker ps      查看运行状态
+CONTAINER ID        IMAGE                         COMMAND                  CREATED             STATUS              PORTS               NAMES
+c720bc3a0d14        hub.c.163.com/library/nginx   "nginx -g 'daemon of…"   12 minutes ago      Up 12 minutes       80/tcp              silly_almeida
+[root@bogon /]# docker exec -it c720bc3a0d14   bash
+
+docker 网络类型 bridge 桥接  
+                host  和主机一样  
+				none 
+				
+重命名镜像
+docker tag IMAGEID(镜像id) REPOSITORY:TAG（仓库：标签）
+指定端口启动 docker run -p 8081:8080 tomcat:7
+docker run -d --hostname my-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3.7.3-management
+
+
+*********************windows下安装的坑 好坑啊~~~~************************
+1 之前安装过git，然后quickstart不好使，需要在属性设置里的目标里面设置git的指向
+2 启动不了default boot2docker iso is out-of-date报这个错，原因是启动时会去git更新版本，
+解决方案是断网
+出现如下错误时：
+Error response from daemon: client is newer than server (client API version: 1.24, server API version: 1.23)
+
+说明客户端和服务端的docker版本不一致，可以设置环境变量解决：
+export DOCKER_API_VERSION=1.22
+
+sudo sed -i "s|EXTRA_ARGS='|EXTRA_ARGS='--registry-mirror=http://04cf9625.m.daocloud.io |g" /var/lib/boot2docker/profile
+

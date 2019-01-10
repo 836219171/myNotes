@@ -1,0 +1,11 @@
+第一步 project structure   
+第二部 选中artifacts
+第三步 点击war exploded 将type类型设置为web application archive
+第四步 点击中间的加号 点击directory content  选一个目录（我也不知道这个目录有啥用，不过不影响）
+第五步 关闭窗口 点击build 选中刚才的文件 
+第六步 放到tomcat 的webapps中 然后startup。bat启动tomcat
+第七步 在浏览器中输入网址运行
+
+麻蛋 发布过后弄混了 导致war包错误 tomcat无法启动 
+解决方法 在artifactis中删除原有war包再新建一个war包后在build一栏中选中rebuild artifactis  再rebuild project 然后配置一下新的tomcat
+参数（路径）即可正常运行

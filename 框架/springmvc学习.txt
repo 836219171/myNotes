@@ -1,0 +1,53 @@
+页面转给控制器时可以绑定参数
+model为域对象，可以addattribute   但是要放在return之前
+    @RequestMapping(value="/login.do", method=RequestMethod.POST)
+    public String hello(@RequestParam("username") String username, @RequestParam("password") String password,
+            Model model){
+        if(username.equals("admin")&&password.equals("admin")){
+        	
+        	 model.addAttribute("username",username);
+        	 return "success";
+        }
+        else{
+        	return "error";
+        }
+       
+    }
+springmvc重定向
+	/**
+	 * 方式一： 使用ModelAndView return new ModelAndView("redirect:/toList");
+	 * 这样可以重定向到toList这个方法 方式二：返回String return "forward:index.jsp"; return
+	 * "forward:user.do?method=reg5"; //转发 return
+	 * "redirect:user.do?method=reg5"; //重定向 return
+	 * "redirect:http://www.baidu.com"; //重定向
+	 */
+WEB-INF下的目录通常不能访问
+数据绑定的几种方式（http://www.cnblogs.com/xd502djj/archive/2013/08/08/3245485.html）
+1.该怎么写就怎么写  就是jsp页面中的 name属性和controller中的变量名保持一致
+2 直接用实体进行绑定  保持实体属性和name属性一致 在controller中直接引入实体
+3 list类型绑定
+  set 类型绑定 
+4 Map绑定
+5 复合参数绑定
+6.循环输出链表   for(i=0;i<list.size();i++){
+			System.out.println(list.get(i));
+		}
+7.@ResponseBody 用于输出ajax和json
+8 首页要是想直接进入controller 配置如下 额外拿出来一个servlet mapping 和一个welcome-file-list对应
+  <servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/return_index</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>return_index</welcome-file>
+  </welcome-file-list>
+9  上传文件，将表单设置为以二进制的形式提交enctype="multipart/form-data"

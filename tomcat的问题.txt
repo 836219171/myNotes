@@ -1,0 +1,8 @@
+﻿1 警告: [SetPropertiesRule]{Server/Service/Engine/Host/Context} Setting property 'source' to 'org.eclipse.jst.jee.server:aa' did not find a matching property
+ 默认情况下，server.xml的 Context元素不支持名称为source的属性，所以会发出警告
+ 解决方案：关闭tomcat，双击eclipse下tomcat服务器，在出来的Tomcat server at localhost页面中找到server options选项，选中其中的选项”Publish modual contexts to separat XML files“，ctr+s，启动tomcat。
+
+2 解决端口占用问题
+                    1 查询  netstat   -ano|findstr  8080  
+					2 终止 taskkill  /pid  4708  /f 
+	// 鏌ヨ浼氬憳涓婁紶鐨勮瘉鏄庢枃浠�				

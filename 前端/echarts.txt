@@ -1,0 +1,117 @@
+1  时间轴标准格式 
+var data = [
+    {name:'2016/12/18 6:38:08', value:['2016/12/18 6:38:08', 80]},
+    {name:'2016/12/18 16:18:18', value:['2016/12/18 16:18:18', 60]},
+    {name:'2016/12/18 19:18:18', value:['2016/12/18 19:18:18', 90]}
+    ]; 
+动态显示时注意 年月日后面要接空格，然后再接日时分。
+2 .动态数据+时间的显示 例子
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.js"></script>
+     <script type="text/javascript">
+
+	//  function test(){
+//		  	
+//	var date1 = new Date();
+// 	var date2 = date1.getHours();
+//	var out = document.getElementById("date");
+//	out.innerHTML=date2;
+//	
+//	//alert(date2);
+//	}
+
+	</script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="height:400px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+function randomData() {
+    now = new Date(+now + oneDay);//返回当前日期
+    value = value + Math.random() * 21 - 10;
+    return {
+        name: now.toString(),
+        value: [
+            [now.getFullYear(), now.getMonth() + 1, now.getDate(),].join('/'),//将/加入到分割的字符串中
+            Math.round(value)//取整
+        ]
+    }
+}
+
+var data = [];
+var now = +new Date(2017, 12, 13);
+var oneDay = 24 * 3600 * 1000;
+var value = Math.random() * 1000;//(0-1000)
+for (var i = 0; i < 1000; i++) {
+    data.push(randomData());
+}
+
+var option = {
+    title: {
+        text: '风速随时间变化曲线'
+    },
+	//提示框
+    tooltip: {
+        trigger: 'axis',//提示框 坐标轴触发，应用在折线图中
+        formatter: function (params) {   //提示框内容格式
+            params = params[0];
+            var date = new Date(params.name);
+            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+        },
+        axisPointer: {
+            animation: false
+        }
+    },
+    xAxis: {
+        type: 'time',
+        splitLine: {
+            show: false
+        }
+    },
+    yAxis: {
+        type: 'value',
+        boundaryGap: ['0%', '100%'],//坐标轴两边的留白策略
+        splitLine: {
+            show: false
+        }
+    },
+    series: [{
+        name: '模拟数据',
+        type: 'line',
+        showSymbol: false,//线用符号表示 比较好看夸张
+        hoverAnimation: false,//拐点动画提示
+        data: data
+    }]
+};
+
+setInterval(function () {
+
+    for (var i = 0; i < 5; i++) {
+        data.shift();//改变数组中第一个元素   .pop改变数组最后一个元素
+        data.push(randomData());//向数组末尾添加一个元素并返回新的长度
+    }
+
+    myChart.setOption({
+        series: [{
+            data: data
+        }]
+    });
+}, 1000);
+        myChart.setOption(option);
+    </script>
+    <div id="date" style="width:200px;height:300px;" > 
+   
+    	<input type="button"  onClick="test()" style="float:right" value="test"/>
+    
+    </div>
+    
+</body>
+</html>

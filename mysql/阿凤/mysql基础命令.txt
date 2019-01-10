@@ -1,0 +1,22 @@
+List of all MySQL commands:所有MySQL命令的列表
+Note that all text commands must be first on line and end with ';'		请注意，所有的文本命令必须首先在线路上，然后以;结束
+?         (\?) Synonym for `help'.						“帮助”的同义词
+clear     (\c) Clear the current input statement.				清除当前输入语句。
+connect   (\r) Reconnect to the server. Optional arguments are db and host.	重新连接到服务器。可选参数是DB和主机。
+delimiter (\d) Set statement delimiter.						设置语句分隔符。默认是;号
+ego       (\G) Send command to mysql server, display result vertically.		发送命令到MySQL服务器，结果显示垂直。
+exit      (\q) Exit mysql. Same as quit.					退出mysql 与quit一样
+go        (\g) Send command to mysql server.					向MySQL服务器发送命令。
+help      (\h) Display this help.						显示这个帮助
+notee     (\t) Don't write into outfile.					不要写进文件。
+print     (\p) Print current command.						打印当前命令。
+prompt    (\R) Change your mysql prompt.					更改MySQL提示。						
+quit      (\q) Quit mysql.							退出MySQL
+rehash    (\#) Rebuild completion hash.						重建完成散列。
+source    (\.) Execute an SQL script file. Takes a file name as an argument.	执行SQL脚本文件。将文件名作为参数
+status    (\s) Get status information from the server.				从服务器获取状态信息。
+tee       (\T) Set outfile [to_outfile]. Append everything into given outfile.	设置输出的文件信息,将所有内容附加到给定的大纲文件中。
+use       (\u) Use another database. Takes database name as argument.		切换数据库/使用另一个数据库。以数据库名称作为参数。
+charset   (\C) Switch to another charset. Might be needed for processing binlog with multi-byte charsets. 切换到另一个字符集。可能需要处理具有多字节字符集的二进制日志。
+warnings  (\W) Show warnings after every statement.				每次声明后显示警告。
+nowarning (\w) Don't show warnings after every statement.			每次发言后，不要显示警告。

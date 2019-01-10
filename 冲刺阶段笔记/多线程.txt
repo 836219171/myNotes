@@ -1,0 +1,4 @@
+countDownLatch 阻塞线程，直到减到0时开始执行下一个
+semaphore减少
+CyclicBarrier增加
+ArrayList多线程状态下线程不安全，要使用CopyOnWriteArrayList

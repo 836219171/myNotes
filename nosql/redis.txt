@@ -1,0 +1,149 @@
+redis事务
+可以这么描述。本身没有事务，起到一个防止其他人插队的作用
+使用方法
+开始组队 multi
+         set k1 v1
+		 set k2 v2 
+		 exec
+在设置的过程中有一个步骤出错，若是编译阶段出错，则取消全部操作，若是运行阶段，则只取消此步骤
+事务冲突问题
+悲观锁:把并发的事务加锁变成串行。认为每次去拿数据的时候都会认为别人会修改。每次拿数据的时候都上锁，别人想拿数据就会block直到拿到它的锁。
+传统数据库里面就用到了这种锁机制。例如表锁，行锁，读锁，写锁等操作，都是再操作之前加上锁。
+
+乐观锁:加版本号，每次更新数据时都会比较一下版本号。   适合于多读少写的操作  redis就是利用这种check-and-set机制实现事务的。
+乐观锁解决的问题。1 并行的用户只有一个成功，其他的都失败。顺序有问题。
+                  2 效率不行加lua脚本效率高，过多的网络传输次数导致效率下降
+watch key 加锁
+unwatch 解锁
+redis事务没有原子性。没有回滚操作
+
+
+redis持久化
+1 RDB方式
+redis会单独创建一个子进程fork来执行持久化，会先将一个数据写入临时文件中。待持久化数据过程结束了，再用这个临时文件替换上次持久化好的文件。
+整个过程中，主进程是不进行任何io操作的。RDB方式比AOF方式效率更高，缺点是不能保证数据的完整性，最后一次持久化的数据可能丢失。
+fork子进程用到了写时复制技术
+优点是存储速度快，节省磁盘空间
+
+2 aof方式
+将redis执行过写的指令以日志的形式记录下来，redis启动之初会将写指令从头到尾执行一遍
+
+两种持久化方式在高频次写入的时候有可能写坏，此时可以用redis-check-aof来检查一下，aof比rdb更容易写坏。
+命令是redis-check-aof --fix appendonly.aof 检查一般是在aof的io文件中，一旦发现异常，删除那一块的内容，比较粗暴。容易丢失数据
+
+同时有aof和rdb模式的保存文件时，启动aof时默认加载的是aof
+   flushall也能恢复
+
+	   
+aof优点： 备份机制稳健，丢失数据概率低。
+		  可读的日志文本，通过操作aof文件，可以处理误操作。
+aof缺点： 比起rdb占用更多的磁盘空间。
+			恢复备份速度慢。
+			
+两种持久化方式选型：如果对数据不敏感，对数据有一定依赖，可以选用rdb。
+					如果对数据特别敏感，可以选用aof。
+					如果纯粹为了优化，可以不启用持久化
+
+
+redis主从复制
+    查看主从的命令: info replication
+	配从不配主 slaveof 127.0.0.1 6380
+	从机的配置include /myredis/redis.conf
+			port 6380
+			pidfile /var/run/redis_6380.pid
+			dbfilename dump6380.rdb
+	主机宕机后，从机会等待主机重连
+
+
+
+用处：读写分离，性能提升。
+       容灾快速恢复
+	   配从不配主
+	   从机只能读，不能写
+	
+	   
+
+	   
+哨兵模式
+
+sentinel monitor mymaster 127.0.0.1 6380 1
+mymaster为监控对象起的服务器名称，1为至少有多少个哨兵同意迁移的数量
+slave-priority 偏移量，主机宕机后，默认选择偏移量较小的，默认为100  主机宕机后，原主机重启，原主机是奴隶
+ 
+
+redis集群，1 代理中间件
+           2 redis cluter3.0
+		   3 哨兵模式配置文件中加入 sentinel monitor mymaster 127.0.0.1 6379 1  
+		   集群节点详情的查看命令  cluster notes
+		注意： 1 一个集群至少有3个节点
+		       2 选项 --replicas表示我们希望为集群中的每个主节点创建一个子节点
+			   3 分配原则尽量保证每个主数据库运行在不同的ip地址，每个从库和主库不在一个ip地址上。
+			一个redis集群包含了16384个插槽，数据库中的每个键都属于这16384个槽中的其中一个，集群使用公式CRC16(key)%16384来计算键key属于哪个槽，
+			其中CRC16(key)语句用于计算key的crc16校验和。
+		   redis集群用了16384个槽来存储值，最少3台机子。每一个机子对应其中一部分槽，这时候体现出来hash和string两种数据结构的区别。
+		   用hash存储对象的时候容易造成内容的不对称。部分槽存储内容过多。
+		   mset命令无法存储，必须要加上一个花括号{xxx}，redis计算花括号里面的内容的hash来计算key是否相同
+		   来获取有多少个key用cluster keyslot xxx
+		   取值的时候用keyslot xxx key来取。 例如 keyslot user k1
+		   
+		   集群的故障恢复
+		   cluster-require-full-coverage yes/no 意思是某一段插槽的主从节点都宕掉，redis服务能否继续。
+		   
+		   redis集群不支持脚本和事务。
+		   
+保证redis和数据库同步，用canal，阿里的工具，会在mysql中设置触发器
+
+redis在线修改配置命令:并不是每个配置项都支持，需要先用get *查看一下支持哪部分命令
+在启动的时候 用 config get *  查看配置项，可以在redis启动的情况下更改配置  例如 config set appendonly ‘yes’
+
+rewrite重写，有一些例如incryby这种指令，redis会定期整理然后重写指令，在配置文件中的配置项是 auto-aof-rewrite-percent   和  auto-aof-rewrite-min-size
+
+redis-cli shutdown 停机
+
+搭建redis集群(官方方案)需要使用ruby脚本，所以需要安装ruby环境，使用yum安装redis的时候遇到了坑，要求ruby环境高于2.2.2。
+解决方案：
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+curl -sSL https://get.rvm.io | bash -s stable
+source  /etc/profile.d/rvm.sh　　　　//按照提示，执行该命令
+rvm list known　　　　// list一下可以安装的版本
+rvm install 2.4.1　　　　// 安装ruby 2.4.1 ，直接跟版本号即可
+博客地址 https://www.cnblogs.com/ding2016/p/7903147.html
+
+启动集群的命令 
+cd /home/qinliang110/文档/redis-4.0.6/src
+
+./redis-trib.rb create --replicas 1 192.168.200.128:6380 192.168.200.128:6381 192.168.200.128:6382 192.168.200.128:6383 192.168.200.128:6384 192.168.200.128:6385  
+
+在redis的配置文件中也需要一些配置。 
+bind 10.93.84.53    每个配置文件要加入这个bind，配置成其他主机可以访问的地址，要不然只能本机启动，外部访问不到
+cluster-enabled yes
+cluster-config-file nodes-6380.conf
+cluster-node-timeout 15000
+
+在集群中如果想要set 需要使用集群客户端 切换客户端命令为 redis-cli -c (-p 端口号)
+在集群中，主节点下线，从节点自动升级成主节点
+
+
+redis集群的优缺点
+优点：  实现扩容
+		分摊压力
+		五中心配置简单
+
+缺点：	多键操作不被支持
+		多键的Redis事务不被支持。不支持lua脚本
+		由于集群方案出现较晚，迁徙原有集群方案到官方版解决方案代价过大。
+
+springBoot中的配置
+spring:		
+  redis:
+    cluster:
+     nodes:
+         - 118.89.112.68:44401
+         - 118.89.112.68:44402
+         - 118.89.112.68:44403
+     max-redirects: 3
+     prefix: bjxf
+     password: beiming_storm
+
+
+		   

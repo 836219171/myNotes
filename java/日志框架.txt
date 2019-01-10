@@ -1,0 +1,70 @@
+常见日志框架
+JCL JUL Log4j Log4j2 Logback jboss-logging SLF4j
+
+日志门面 JCL SLF4j jboss-logging
+日志实现 Log4j Log4j2 Logback JUL
+
+点餐系统采用的是SLF4J + Logback
+
+日志级别     ERROR(40, "ERROR"),WARN(30, "WARN"),INFO(20, "INFO"),DEBUG(10, "DEBUG"),TRACE(0, "TRACE");
+yml 文件配置  logging:
+				pattern:
+                  console:  "%d - %msg%n"
+                path: log/
+
+xml 按日期滚动输出，每天一个文件
+	<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %d - %msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	 <!--只拦截error的日志，并且将其忽略-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/springLog/sell/info.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	    <!--只拦截error的日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern> %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+              <fileNamePattern>log/springLog/sell/error.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+
+
+
+
+    <root level="info">
+       <appender-ref ref="consoleLog"></appender-ref>
+       <appender-ref ref="fileInfoLog"></appender-ref>
+       <appender-ref ref="fileErrorLog"></appender-ref>
+
+    </root>
+
+</configuration>		
