@@ -1,0 +1,13 @@
+	
+	mysql -h127.0.0.1 -uroot -P13307 -pMySql@hangzhou+2017 < robotv2.0.sql
+	
+	cd /data/service/mfav-robot/docker
+	
+	
+	docker-compose -f mysql.yml stop
+	
+	docker-compose -f mysql.yml up -d
+	
+	重启镜像
+	docker restart 镜像id
+	docker inspect 

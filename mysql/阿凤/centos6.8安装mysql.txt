@@ -3,7 +3,7 @@
 3 yum localinstall -y mysql57-community-release-el6-9.noarch.rpm   
 4 yum install mysql-community-server
 5 service mysqld start
-6 grep 'temporary password' /var/log/mysqld.log  查找密码
+6 grep 'temporary password' /var/log/mysqld.log  #查找密码
 7 mysql -uroot -p 
 8 ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
 

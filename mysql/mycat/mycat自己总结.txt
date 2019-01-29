@@ -1,1 +1,3 @@
 1 schemal里面的 checkSqlSchemal里面如果是true的话，会检查表名前面是否带有数据库名，如果有的话会去掉
+2 cp /data/service/mfav-robot/conf/mycat/test-schema.xml    /root/mycat/conf/schema.xml  
+3 mv 

@@ -1,0 +1,13 @@
+1 服务端集成不能发送 语音 图像 文件信息
+
+grant all privileges on *.* to root@localhost identified by 'MySql@hangzhou+2017';
+
+24dc3b3026e0是开发库
+077cdad94e53建了一个test用户，但是外部仍然连接不上
+还有一个第三个mysql是干什么用的
+
+grant all privileges on `*`.* to 'test'@'localhost' identified by '123456';
+
+flush privileges;
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'MySql@hangzhou+2017' WITH GRANT OPTION;

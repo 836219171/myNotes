@@ -1,0 +1,9 @@
+error code ELIFECYCLE
+1968 error errno 1
+1969 error node-sass@4.11.0 postinstall: `node scripts/build.js`
+1969 error Exit status 1
+1970 error Failed at the node-sass@4.11.0 postinstall script.
+1970 error This is probably not a problem with npm. There is likely additional logging output above.
+1971 verbose exit [ 1, true ]
+
+如果报这个错，有可能是node-sass的版本不对，可以去node-modules里面修改版本号

@@ -1,0 +1,13 @@
+帐号  15950493130@163.com
+密码  chitouyuanma123
+
+腾讯云 云通信IM 管理员 bmadmin
+ 
+tls_licence_tools.exe gen D:\谷歌下载\20151230\20151230\tls_sig_api-windows-64\tls_sig_api-windows-64\tools\ec_key.pem  sig  D:\谷歌下载\20151230\20151230\tls_sig_api-windows-64\tls_sig_api-windows-64\tools\sig 1400173943 bmadmin
+
+tls_licence_tools verify D:\public_key sig 的存放路径 D:\user_sig 1400173943 bmadmin
+
+
+tls_licence_tools.exe gen ec_key.pem sig 1400173943 bmadmin
+
+tls_licence_tools.exe verify public.pem sig 1400173943 bmadmin

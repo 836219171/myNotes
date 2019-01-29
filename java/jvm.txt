@@ -1,0 +1,52 @@
+1 分析堆栈信息网站 https://fastthread.io/index.jsp
+2 jprofile如何使用 https://blog.csdn.net/weixin_33602978/article/details/85267448
+
+
+加入监控 重要!!!!
+
+
+
+1999 --> 20058
+
+2001 --> 22002
+
+top查看当前系统的虚拟内存占用情况
+
+第七行以下：各进程（任务）的状态监控
+PID — 进程id
+USER — 进程所有者
+PR — 进程优先级
+NI — nice值。负值表示高优先级，正值表示低优先级
+VIRT — 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES
+RES — 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA
+SHR — 共享内存大小，单位kb
+S — 进程状态。D=不可中断的睡眠状态 R=运行 S=睡眠 T=跟踪/停止 Z=僵尸进程
+%CPU — 上次更新到现在的CPU时间占用百分比
+%MEM — 进程使用的物理内存百分比
+TIME+ — 进程使用的CPU时间总计，单位1/100秒
+COMMAND — 进程名称（命令名/命令行）
+
+jmap -dump:format=b,file=20012dump.hprof 22002
+
+
+jmap -histo 11525>a1454.log  列出实例个数
+
+jmap -dump:live,file=a.log 22002
+
+jhat -J-Xmx512M a.log
+
+jstat -gcutil 22002 3000
+
+jstack -l 22022 >1.txt
+
+https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
+
+https://www.cnblogs.com/0616--ataozhijia/p/4136312.html
+
+https://www.cnblogs.com/lizhonghua34/p/7307139.html jstat 命令
+
+
+目前的解决方向 两个 第一个是jstack查看。
+					或者用springboot的监控工具
+					
+					

@@ -320,3 +320,10 @@ count()还有一种使用方式，count(1)这个用法和count(*)的结果是一
 37  查询表中的字段SELECT COLUMN_NAME FROM information_schema.columns WHERE table_name='remote_query' AND TABLE_SCHEMA='work_interface'
 38  ads数据库不支持 *
 39	mybatis中 table要预编译，使用这个${}，而且当需要动态的多个表的时候，可以用foreach嵌套sql 类似   <foreach collection="tableNames" separator="UNION" item="tableName">
+40 查看mysql主从配置时的binlog的同步策略 show VARIABLES like '%log%' 修改命令 set global binlog_format='mixed' 也可以在配置文件中修改 binlog_format = mixed
+
+
+set global binlog_format='mixed'
+
+set global max_allowed_packet = 2000 * 1024 * 1024;
+

@@ -91,4 +91,6 @@ ps 是列出所有进程 ps -ef|grep xxx 查找xxx所在进程并且列出详细
 22 .gz文件的解压操作 
 	gzip -d  压缩文件
 	gunzip  压缩文件
+	
+23	查看端口占用 netstat -ntulp | grep 3306
             			 

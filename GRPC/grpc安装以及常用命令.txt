@@ -1,8 +1,16 @@
  
  
-protoc --java_out=/protoOut --grpc_out=/protoOut --plugin=protoc-gen-grpc-java="/data/proto/grpc-java/compiler/build/exe/java_plugin/protoc-gen-grpc-java"  IssueService.proto
+ 执行的目录 
+ cd /data/service/mfav-robot/bin
+ 执行命令如下
  
-protoc --java_out="./" --grpc_out="./" --plugin=protoc-gen-grpc="/usr/local/bin/grpc_cpp_plugin" "./"
+ ln -s /usr/local/protobuf/bin/protoc /usr/local/bin/protoc
+ 
+protoc --java_out="/protoOut" --grpc_out="/protoOut" --plugin=protoc-gen-grpc="/usr/local/bin/grpc_cpp_plugin" IssueService.proto
+
+##protoc --java_out=/protoOut --grpc_out=/protoOut --plugin=protoc-gen-grpc-java="/usr/local/bin/protoc-gen-grpc-java"  IssueService.proto
+##protoc --java_out=/protoOut --grpc_out=/protoOut --plugin=protoc-gen-grpc-java="which protoc-gen-grpc-java"  IssueService.proto
+protoc --java_out=/protoOut --grpc_out=/protoOut --plugin=protoc-gen-grpc=/usr/local/bin/protoc-gen-grpc-java IssueService.proto
  
  
  /usr/local/bin/grpc_cpp_plugin
@@ -114,6 +122,15 @@ sudo ln -s /data/anaconda3/share/licenses/libstdc++
  /usr/local/lib/libstdc++.so
  
  g++ /lib/libstdc++.so -lxyz myprog.cpp -o myprog
+ 
+ **************1月18日大佬教的命令*************
+ yum install  zlib zlib-devel
+ yum install libzlib.so
+ ln -s /usr/lib64/libz.so /usr/lib/libzlib.so
+ ld -lzlib --verbose
+ 
+ 
+ 
  
  解决grpc-java无法安装的问题
  yum install glibc-static libstdc++-static

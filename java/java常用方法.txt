@@ -124,7 +124,7 @@
 15 一般情况下内部类只使用一次的时候，使用匿名内部类来简化代码，更加优雅。
 16 final修饰的变量是指引用不能变，但是引用指向的变量可以变
 17 pojo枚举类，属性若是为枚举，默认读取枚举类中第一个属性
-
+18 lamda表达式分析 https://www.oracle.com/technetwork/java/jvmls2013kuksen-2014088.pdf
 
 
 
