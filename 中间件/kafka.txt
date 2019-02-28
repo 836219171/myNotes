@@ -1,0 +1,2 @@
+1 kafka的leader选举是通过broad_id注册的先后顺序确定的
+2 kafka官方文档 http://kafka.apache.org/documentation/

@@ -1,0 +1,1 @@
+eureka的解决方案:nacos,consul

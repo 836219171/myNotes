@@ -88,3 +88,34 @@ private Integer isMan;
 	例如     <if test="endTime!=null">
 				AND t.end_time <![CDATA[ <= ]]> #{endTime}
 			</if>
+12 tk Mapper中 注解@MapperScan用tkMapper里面的，要不然tk的不能使用,同时BaseMapper不能被扫描到	
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

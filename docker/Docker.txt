@@ -127,6 +127,10 @@ OPTIONS说明：
 过滤只显示几个内容
 docker ps --format "{{.ID}}: {{.Command}}"
 
-docker compose -f
+docker compose -f xxx.yml
+-f指定要启动的yml文件名，然后启动,包括logs等命令都需要指定响应的yml文件
 
+https://www.jianshu.com/p/f5c1dbb4a028 docker+Jenkins
+
+https://www.cnblogs.com/Csir/p/6888474.html  docker常用命令
 

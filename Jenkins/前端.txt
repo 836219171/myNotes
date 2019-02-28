@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+set -x
+HOSTS="119.3.38.125"
+OPTS="-o StrictHostKeyChecking=no root@$HOSTS"
+mvn clean package -f ./robot-java-backend/pom.xml docker:build -DpushImage 
+ssh $OPTS 'docker pull registry:5000/robot-java-odr:latest'
+ssh $OPTS 'cd /data/service/mfav-robot/docker && docker-compose -f odr-java.yml stop && docker-compose -f odr-java.yml up -d'

@@ -26,3 +26,6 @@ state 为 0，证明当前同步块中没有线程在执行，所以当前线程
 
 讲cas和aqs不错的文章
 https://www.cnblogs.com/zhangjk1993/p/6715653.html#_label5
+
+吞吐量（TPS）、QPS、并发数、响应时间（RT）概念
+https://www.cnblogs.com/longxiaojiangi/p/9259745.html

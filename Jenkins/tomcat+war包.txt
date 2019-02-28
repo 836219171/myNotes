@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+set -x
+
+RELEASE=`date +%s`
+HOSTS="172.17.0.12"
+OPTS="-o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@$HOSTS"
+
+PROJECT="xf-service-test"
+FILE="xf-web/target/xf-web-1.0-SNAPSHOT.war"
+
+
+ssh $OPTS /data/tomcat-$PROJECT/bin/shutdown.sh
+ssh $OPTS /data/tomcat-$PROJECT/$PROJECT.sh stop
+ssh $OPTS ps aux | grep java | grep tomcat-$PROJECT | grep -v grep | awk '{print $2}'| xargs kill -9 && echo "stop sucess" || echo "already stop"
+ssh $OPTS rm -rf /data/tomcat-$PROJECT/work/Catalina
+ssh $OPTS mkdir -p /data/tomcat-$PROJECT/backup
+ssh $OPTS mv /data/tomcat-$PROJECT/webapps/ROOT/ /data/tomcat-$PROJECT/backup/ROOT.$RELEASE
+ssh $OPTS mkdir /data/tomcat-$PROJECT/webapps/ROOT/
+scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa $FILE root@$HOSTS:/data/tomcat-$PROJECT/backup/
+ssh $OPTS unzip /data/tomcat-$PROJECT/backup/${FILE##*/} -d /data/tomcat-$PROJECT/webapps/ROOT/
+ssh $OPTS rm /data/tomcat-$PROJECT/backup/${FILE##*/}
+ssh $OPTS /data/tomcat-$PROJECT/bin/startup.sh
+
+
+scp /data/jenkins/workspace/odr-robot/robot_java_TEST/robot-java-backend/target/robot-odr-2.7.4.jar  119.3.38.125:/data/service/mfav-dev/

@@ -31,6 +31,8 @@ jmap -dump:format=b,file=20012dump.hprof 22002
 
 jmap -histo 11525>a1454.log  列出实例个数
 
+jmap -histo:live [pid] 进行一次fullGC，统计剩余的heap信息
+
 jmap -dump:live,file=a.log 22002
 
 jhat -J-Xmx512M a.log
@@ -43,10 +45,101 @@ https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html
 
 https://www.cnblogs.com/0616--ataozhijia/p/4136312.html
 
-https://www.cnblogs.com/lizhonghua34/p/7307139.html jstat 命令
 
 
 目前的解决方向 两个 第一个是jstack查看。
 					或者用springboot的监控工具
-					
+
+jstat命令详解 https://www.cnblogs.com/yjd_hycf_space/p/7755633.html		
+
+查看当前垃圾回收策略 java  -XX:+PrintCommandLineFlags  -version
+-XX:+DisableExplicitGC，屏蔽了System.gc()动作
+
+大对象直接进入老年代的阈值
+-XX:PretenureSizeThreshold=3145728=3M
+
+多次回收的对象年龄的阈值 default为15
+-XX:MaxTenuringThreshold=1
+
+除了上面的那个年龄阈值，jvm还会有动态对象年龄判断
+  相同年龄所有对象大小的总和 > Survivor空间的一半
+
+分配担保
+	minorGC的时候，会首先检查老年代最大连续可用空间是否大于新生代所有对象空间
+	
+	Minor GC  回收新生代
+	Major GC  回收老年代
+	Full gc   MinorGC + MajorGC
+
+	
+引用：
+
+强引用 Object
+
+弱引用 SOftReference 可达性算法
+1
+软引用
+
+虚引用
+
+
+回收：
+    方法论
+	     标记清除算法
+		 复制回收算法
+		 标记整理算法  没弄懂
+	 
+	垃圾收集器
+	    STW Stop the world
+		Serial 
+		ParNew
+			-XX: ParalleGCThreads
+		Parallel Scavenge(全局)
+			吞吐量 = 用户代码运行时间 / 用户代码运行时间 + 垃圾收集时间
+			-XX:MaxGCPauseMills=n
+			-XX:GCTimeRatio=n
+			-XX:UseAdaptiveSizePolicy GC Ergonimics
+		Serial Old 
+			CMS备用方案 Conconcurrent Mode Failusre时使用
+			标记整理算法
+		CMS 减少停顿时间 
+			标记清除算法
+		碎片达到阈值的时候采用SerialOld-XX: CMSInitiationgOccupancyFraction
+										-XX: CMSFULLGCBeforeCompaction 执行多少次不压缩的FullGC后 来一次带压缩的 0表示每次都压缩
+										-XX: UseConMarkSweep
+										
+jstat -gccause pid 3000 可以查询造成gc的原因
+			
+
+jdk11的 ZGC
+
+打印当前虚拟机参数 java -client -XX:+PrintFlagsFinal Benchmark
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
 					

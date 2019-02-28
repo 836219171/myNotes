@@ -8,6 +8,15 @@
 	
 	docker-compose -f mysql.yml up -d
 	
+	
+	cd /data/service/mfav-robot/docker && docker-compose -f mycat.yml stop && docker-compose -f mycat.yml up -d
+	
 	重启镜像
 	docker restart 镜像id
 	docker inspect 
+	
+	docker-compose 访问docker启动的服务端口时，添加ports:
+													 - xxxx:yyyy  然后在yml文件中使用镜像名称:yyyy即可获得ip+端口号
+													 
+													 
+	docker-compose up -d  (-d是后台启动的意思)

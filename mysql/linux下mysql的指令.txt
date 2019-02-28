@@ -327,3 +327,48 @@ set global binlog_format='mixed'
 
 set global max_allowed_packet = 2000 * 1024 * 1024;
 
+
+解决mysql事务被锁的方法
+用下面指令查询当前运行的sql详细信息 找到thread_id，然后杀掉
+select * from information_schema.innodb_trx
+
+kill 11503
+
+
+select * from information_schema.processlist where DB = 'robotv2.1'
+
+innodb_trx ## 当前运行的所有事务
+innodb_locks ## 当前出现的锁
+innodb_lock_waits ## 锁等待的对应关系
+
+mysql库名有点的时候，需要转义，库名用``来代替
+
+CREATE USER 'robot-odr'@'%' IDENTIFIED BY 'MySql@hangzhou+2017';
+
+GRANT SELECT ON `robotv2\.0`.* TO 'robot-odr'@'%';
+
+revoke all on case_beijing.* from 'robot-odr'@'%';
+
+revoke all  on '*' from 'robot-odr'@'%';
+
+revoke all on *.* from 'robot-odr'@'%';
+
+
+
+帐号 robot-odr
+密码 MySql@hangzhou+2017
+ip 118.89.162.25
+端口 13306
+
+
+
+
+
+
+
+
+
+
+
+
+

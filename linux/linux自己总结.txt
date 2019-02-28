@@ -93,4 +93,129 @@ ps 是列出所有进程 ps -ef|grep xxx 查找xxx所在进程并且列出详细
 	gunzip  压缩文件
 	
 23	查看端口占用 netstat -ntulp | grep 3306
+
+server {
+	listen 80;
+	listen 443 ssl;
+	
+	include /etc/nginx/httest_ssl_params;
+
+	server_name httest.robot.odrcloud.com;
+        include /etc/nginx/disable_user_agent;
+
+        if ($scheme = http ) {
+                return 301 https://$server_name$request_uri;
+        }
+	location /websocket {
+		limit_req zone=robot_websocket burst=30 nodelay;
+        	include /etc/nginx/webscoket_params;
+        	proxy_pass  http://odr-java-1:19090/websocket;	
+		proxy_set_header platform htODR;
+    	}
+## old api start
+        location ~ ^/(start|evaluation|answer) {
+                include         /etc/nginx/proxy_params;
+                proxy_pass      http://localhost:19090/$1;
+                proxy_set_header platform htODR;
+        }
+        location ~ ^/(tools|api|relate|case)/.* {
+                include         /etc/nginx/proxy_params;
+                proxy_pass      http://odr-java-1:19090/$request_uri;
+                proxy_set_header platform htODR;
+        }
+## old api end
+
+## new api start
+        location ~ ^.*?\.(txt)$ {
+            include /etc/nginx/proxy_params;    
+            root /var/www/static;
+        }
+        location ~ ^/(cases|vchat|tools|laws|solutions|open|instrument|instruments|images|image|solutionProcess)/.* {
+                include         /etc/nginx/proxy_params;
+                proxy_pass      http://odr-java-1:19090/$request_uri;
+                proxy_set_header platform htODR;
+        }
+        location / {
+                root	/var/www/robot;
+                include         /etc/nginx/proxy_params;
+                try_files $uri $uri/ @router;
+                index   index.html;
+        }
+        location @router {
+                rewrite ^.*$ /index.html last;
+        }
+
+
+}
+
+ssl_certificate   /data/service/mfav-robot/conf/nginx/cert/zz.robot.odrcloud.cn.crt;
+ssl_certificate_key  /data/service/mfav-robot/conf/nginx/cert/zz.robot.odrcloud.cn.key;
+ssl_session_timeout 5m;
+ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+
+
+        location /websocket {
+                include /etc/nginx/proxy_params;
+                proxy_pass  http://localhost:19099/websocket;
+                proxy_set_header platform zjODR;
+        }
+		
+		location / {
+                include         /etc/nginx/proxy_params;
+                proxy_pass      http://localhost:19099/;
+                proxy_set_header platform zjODR;
+
+        }
+		
+htop命令  参数
+第三区域：当前系统中的所有进程。各列说明：
+PID：进程标志号，是非零正整数
+USER：进程所有者的用户名
+PR：进程的优先级别
+NI：进程的优先级别数值
+VIRT：进程占用的虚拟内存值
+RES：进程占用的物理内存值
+SHR：进程使用的共享内存值
+S：进程的状态，其中S表示休眠，R表示正在运行，Z表示僵死状态，N表示该进程优先值是负数
+%CPU：该进程占用的CPU使用率
+%MEM：该进程占用的物理内存和总内存的百分比
+TIME+：该进程启动后占用的总的CPU时间
+COMMAND：进程启动的启动命令名称
+
+scp 远端传送文件
+
+监控磁盘io ****************************
+[root@testhost ~]# iostat
+-bash: iostat: command not found
+
+IOSTAT 命令不可用，首先确认sysstat包是否安装，sysstat包中包括iostat,mpstat,sar,sa
+
+[root@testhost ~]#yum install -y sysstat
+
+安装完成后，再执行iostat命令。
+
+avg-cpu段:
+%user: 在用户级别运行所使用的CPU的百分比.
+%nice: nice操作所使用的CPU的百分比.
+%sys: 在系统级别(kernel)运行所使用CPU的百分比.
+%iowait: CPU等待硬件I/O时,所占用CPU百分比.
+%idle: CPU空闲时间的百分比.
+
+
+Device段:
+tps: 每秒钟发送到的I/O请求数.
+Blk_read /s: 每秒读取的block数.
+Blk_wrtn/s: 每秒写入的block数.
+Blk_read:   读入的block总数.
+Blk_wrtn:  写入的block总数.
+
+
+mpstat查看系统的cpu运行状态
+
+
+
+
+
             			 
