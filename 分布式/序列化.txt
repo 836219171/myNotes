@@ -1,0 +1,1 @@
+1 github项目 各种序列化性能对比  https://github.com/eishay/jvm-serializers/wiki

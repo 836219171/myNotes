@@ -1,0 +1,229 @@
+﻿
+
+NETWORK网络
+bind 0.0.0.0
+绑定的主机地址,指定 redis 只接收来自于该 IP 地址的请求，如果不进行设置，那么将处理所有请求
+protected-mode yes
+是否开启保护模式，默认开启。要是配置里没有指定bind和密码。开启该参数后，redis只会本地进行访问，拒绝外部访问。要是开启了密码   和bind，可以开启。否   则最好关闭，设置为no。
+port 6381
+指定Redis监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字
+tcp-backlog 511
+此参数确定了TCP连接中已完成队列(完成三次握手之后)的长度， 当然此值必须不大于Linux系统定义的/proc/sys/net/core/somaxconn值，默认是511，而Linux的默认参数值是128。当系统并发量大并且客户端速度缓慢的时候，可以将这二个参数一起参考设定。该内核参数默认值一般是128，对于负载很大的服务程序来说大大的不够。一般会将它修改为2048或者更大。在/etc/sysctl.conf中添加:net.core.somaxconn = 2048，然后在终端中执行sysctl -p。
+unixsocket /tmp/redis.sock
+配置unix socket来让redis支持监听本地连接。
+unixsocketperm 700
+配置unix socket使用文件的权限
+tcp-keepalive 60
+tcp-keepalive参数。如果设置不为0，就使用配置tcp的SO_KEEPALIVE值，使用keepalive有两个好处:检测挂掉的对端。降低中间设备出问题而导致网络看似连接却已经与对端端口的问题。在Linux内核中，设置了keepalive，redis会定时给对端发送ack。检测到对端关闭需要两倍的设置值。
+
+
+GENERAL通用
+daemonize yes
+Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程
+supervised no
+可以通过upstart和systemd管理Redis守护进程，这个参数是和具体的操作系统相关的。
+pidfile "/var/run/redis_6381.pid"
+当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定
+loglevel notice
+ 指定了服务端日志的级别。级别包括：debug（很多信息，方便开发、测试），verbose（许多有用的信息，但是没有debug级别信息多），notice（适当的日志级别，适合生产环境），warn（只有非常重要的信息）
+logfile "/var/log/redis_6381.log"
+日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null
+syslog-enabled no是否把日志记录到系统日志。
+syslog-ident redis设置系统日志的id
+syslog-facility local0指定syslog设备(facility)，必须是user或则local0到local7。
+databases 16
+设置数据库的数量，默认数据库为0，可以使用SELECT <dbid>命令在连接上指定数据库id
+
+
+SNAPSHOTTING快照
+save 900 1
+save 300 10
+save 60 10000
+指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合
+stop-writes-on-bgsave-error yes
+默认情况下，如果 redis 最后一次的后台保存失败，redis 将停止接受写操作，这样以一种强硬的方式让用户知道数据不能正确的持久化到磁盘， 否则就会没人注意到灾难的发生。 如果后台保存进程重新启动工作了，redis 也将自动的允许写操作。然而你要是安装了靠谱的监控，你可能不希望 redis 这样做，那你就改成 no 好了。
+rdbcompression yes
+指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大
+rdbchecksum yes
+是否CRC64校验rdb文件，会有一定的性能损失（大概10%）。
+dbfilename "dump_6381.rdb"
+指定本地数据库文件名，默认值为dump.rdb
+dir "/usr/local/redis4/db"
+指定本地数据库存放目录
+
+
+REPLICATION复制
+slaveof <masterip> <masterport>
+设置当本机为slave服务时，设置master服务的IP地址及端口，在Redis启动时，它会自动从master进行数据同步
+masterauth <master-password>
+当master服务设置了密码保护时，slav服务连接master的密码
+slave-serve-stale-data yes
+当一个slave与master失去联系时，或者复制正在进行的时候，slave应对请求的行为：1) 如果为 yes（默认值） ，slave 仍然会应答客户端请求，但返回的数据可能是过时，或者数据可能是空的在第一次同步的时候；2) 如果为 no ，在你执行除了 info 和 salveof 之外的其他命令时，slave 都将返回一个 "SYNC with master in progress" 的错误。
+slave-read-only yes
+设置slave是否是只读的。从2.6版起，slave默认是只读的。
+repl-diskless-sync no
+主从数据复制是否使用无硬盘复制功能。
+repl-diskless-sync-delay 5
+当启用无硬盘备份，服务器等待一段时间后才会通过套接字向从站传送RDB文件，这个等待时间是可配置的。 
+这一点很重要，因为一旦传送开始，就不可能再为一个新到达的从站服务。从站则要排队等待下一次RDB传送。因此服务器等待一段时间以期更多的从站到达。 
+延迟时间以秒为单位，默认为5秒。要关掉这一功能，只需将它设置为0秒，传送会立即启动。
+repl-ping-slave-period 10
+指定slave定期ping master的周期，默认10秒钟。
+repl-timeout 60
+设置主库批量数据传输时间或者ping回复时间间隔，默认值是60秒 。
+repl-disable-tcp-nodelay no
+指定向slave同步数据时，是否禁用socket的NO_DELAY选 项。若配置为“yes”，则禁用NO_DELAY，则TCP协议栈会合并小包统一发送，这样可以减少主从节点间的包数量并节省带宽，但会增加数据同步到 slave的时间。若配置为“no”，表明启用NO_DELAY，则TCP协议栈不会延迟小包的发送时机，这样数据同步的延时会减少，但需要更大的带宽。 通常情况下，应该配置为no以降低同步延时，但在主从节点间网络负载已经很高的情况下，可以配置为yes。
+repl-backlog-size 1mb
+设置主从复制backlog容量大小。这个 backlog 是一个用来在 slaves 被断开连接时存放 slave 数据的 buffer，所以当一个 slave 想要重新连接，通常不希望全部重新同步，只是部分同步就够了，仅仅传递 slave 在断开连接时丢失的这部分数据。这个值越大，salve 可以断开连接的时间就越长。
+repl-backlog-ttl 3600
+配置当master和slave失去联系多少秒之后，清空backlog释放空间。当配置成0时，表示永远不清空。
+slave-priority 100
+当 master 不能正常工作的时候，Redis Sentinel 会从 slaves 中选出一个新的 master，这个值越小，就越会被优先选中，但是如果是 0 ， 那是意味着这个 slave 不可能被选中。 默认优先级为 100。
+ min-slaves-to-write 3
+ min-slaves-max-lag 10
+在从服务器的数量少于3个,或者三个从服务器的延迟(lag)值都大于或等于10秒时,主服务器将拒绝执行写命令
+slave-announce-ip 5.5.5.5
+slave-announce-port 1234
+ Redis master能够以不同的方式列出所连接slave的地址和端口。 
+ 例如，“INFO replication”部分提供此信息，除了其他工具之外，Redis Sentinel还使用该信息来发现slave实例。
+ 此信息可用的另一个地方在masterser的“ROLE”命令的输出中。
+ 通常由slave报告的列出的IP和地址,通过以下方式获得：
+ IP：通过检查slave与master连接使用的套接字的对等体地址自动检测地址。
+ 端口：端口在复制握手期间由slavet通信，并且通常是slave正在使用列出连接的端口。
+ 然而，当使用端口转发或网络地址转换（NAT）时，slave实际上可以通过(不同的IP和端口对)来到达。 slave可以使用以下两个选项，以便向master报告一组特定的IP和端口，
+ 以便INFO和ROLE将报告这些值。
+ 如果你需要仅覆盖端口或IP地址，则没必要使用这两个选项。
+
+ 
+ SECURITY安全
+requirepass "M^T*xg69MEc&D45%kE&K"
+设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH <password>命令提供密码，默认关闭
+rename-command CONFIG ""
+
+
+
+LIMITS限制
+maxclients 10000
+设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max number of clients reached错误信息
+maxmemory 4gb
+ 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，当此方法处理 后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区
+maxmemory-policy noeviction
+ 当内存使用达到最大值时，redis使用的清楚策略。有以下几种可以选择：
+  1）volatile-lru   利用LRU算法移除设置过过期时间的key (LRU:最近使用 Least Recently Used ) 
+  2）allkeys-lru   利用LRU算法移除任何key 
+  3）volatile-random 移除设置过过期时间的随机key 
+  4）allkeys-random  移除随机ke
+  5）volatile-ttl   移除即将过期的key(minor TTL) 
+  6）noeviction  noeviction   不移除任何key，只是返回一个写错误 ，默认选项
+maxmemory-samples 5
+ LRU 和 minimal TTL 算法都不是精准的算法，但是相对精确的算法(为了节省内存)
+  随意你可以选择样本大小进行检，redis默认选择3个样本进行检测，你可以通过maxmemory-samples进行设置样本数
+
+  
+  APPEND ONLY MODE追加模式
+appendonly yes
+指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no
+appendfilename "redis_6381.aof"
+指定更新日志文件名，默认为appendonly.aof
+appendfsync always/everysec/no
+指定更新日志条件，共有3个可选值：     no：表示等操作系统进行数据缓存同步到磁盘（快）     always：表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）     everysec：表示每秒同步一次（折衷，默认值）
+no-appendfsync-on-rewrite no
+指定是否在后台aof文件rewrite期间调用fsync，默认为no，表示要调用fsync（无论后台是否有子进程在刷盘）。Redis在后台写RDB文件或重写AOF文件期间会存在大量磁盘IO，此时，在某些linux系统中，调用fsync可能会阻塞。
+auto-aof-rewrite-percentage 100
+当AOF文件增长到一定大小的时候Redis能够调用 BGREWRITEAOF 对日志文件进行重写 。当AOF文件大小的增长率大于该配置项时自动开启重写。
+auto-aof-rewrite-min-size 64mb
+当AOF文件增长到一定大小的时候Redis能够调用 BGREWRITEAOF 对日志文件进行重写 。当AOF文件大小大于该配置项时自动开启重写。
+aof-load-truncated yes
+redis在启动时可以加载被截断的AOF文件，而不需要先执行 redis-check-aof 工具。
+
+
+
+LUA SCRIPTING lua脚本
+lua-time-limit 5000
+一个Lua脚本最长的执行时间，单位为毫秒，如果为0或负数表示无限执行时间，默认为5000。
+
+
+
+
+REDIS CLUSTER集群
+cluster-enabled yes
+如果配置yes则开启集群功能，此redis实例作为集群的一个节点，否则，它是一个普通的单一的redis实例。
+cluster-config-file nodes-6379.conf
+虽然此配置的名字叫"集群配置文件"，但是此配置文件不能人工编辑，它是集群节点自动维护的文件，主要用于记录集群中有哪些节点、他们的状态以及一些持久化参数等，方便在重启时恢复这些状态。通常是在收到请求之后这个文件就会被更新。
+cluster-node-timeout 15000
+这是集群中的节点能够失联的最大时间，超过这个时间，该节点就会被认为故障。如果主节点超过这个时间还是不可达，则用它的从节点将启动故障迁移，升级成主节点。注意，任何一个节点在这个时间之内如果还是没有连上大部分的主节点，则此节点将停止接收任何请求。一般设置为15秒即可。
+cluster-slave-validity-factor 10
+如果设置成０，则无论从节点与主节点失联多久，从节点都会尝试升级成主节点。如果设置成正数，则cluster-node-timeout乘以cluster-slave-validity-factor得到的时间，是从节点与主节点失联后，此从节点数据有效的最长时间，超过这个时间，从节点不会启动故障迁移。假设cluster-node-timeout=5，cluster-slave-validity-factor=10，则如果从节点跟主节点失联超过50秒，此从节点不能成为主节点。注意，如果此参数配置为非0，将可能出现由于某主节点失联却没有从节点能顶上的情况，从而导致集群不能正常工作，在这种情况下，只有等到原来的主节点重新回归到集群，集群才恢复运作。
+cluster-migration-barrier 1
+主节点需要的最小从节点数，只有达到这个数，主节点失败时，它从节点才会进行迁移。
+cluster-require-full-coverage yes
+在部分key所在的节点不可用时，如果此参数设置为"yes"(默认值), 则整个集群停止接受操作；如果此参数设置为”no”，则集群依然为可达节点上的key提供读操作。
+
+
+
+SLOW LOG慢日志
+slowlog-log-slower-than 10000
+它决定要对执行时间大于多少微秒(microsecond，1秒 = 1,000,000 微秒)的查询进行记录。
+slowlog-max-len 128
+它决定 slow log 最多能保存多少条日志， slow log 本身是一个 FIFO 队列，当队列大小超过 slowlog-max-len 时，最旧的一条日志将被删除，而最新的一条日志加入到 slow log ，以此类推。
+
+
+
+LATENCY MONITOR 延迟监控
+latency-monitor-threshold 0
+redis延时监控系统在运行时会采样一些操作，以便收集可能导致延时的数据根源。
+# 通过 LATENCY命令 可以打印一些图样和获取一些报告，方便监控
+# 这个系统仅仅记录那个执行时间大于或等于预定时间（毫秒）的操作,
+# 这个预定时间是通过latency-monitor-threshold配置来指定的，
+# 当设置为0时，这个监控系统处于停止状态
+
+
+
+
+EVENT NOTIFICATION 事件通知
+notify-keyspace-events ""
+Redis能通知 Pub/Sub 客户端关于键空间发生的事件，默认关闭
+
+
+
+ADVANCED CONFIG 高级配置
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+当hash只有少量的entry时，并且最大的entry所占空间没有超过指定的限制时，会用一种节省内存的
+# 数据结构来编码。可以通过下面的指令来设定限制
+
+list-max-ziplist-size -2
+list-compress-depth 0
+set-max-intset-entries 512
+set有一种特殊编码的情况：当set数据全是十进制64位有符号整型数字构成的字符串时。
+# 下面这个配置项就是用来设置set使用这种编码来节省内存的最大长度。
+
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+与hash和list相似，有序集合也可以用一种特别的编码方式来节省大量空间。
+# 这种编码只适合长度和元素都小于下面限制的有序集合
+
+hll-sparse-max-bytes 3000
+HyperLogLog稀疏结构表示字节的限制。该限制包括
+# 16个字节的头。当HyperLogLog使用稀疏结构表示
+# 这些限制，它会被转换成密度表示。
+# 值大于16000是完全没用的，因为在该点
+# 密集的表示是更多的内存效率。
+# 建议值是3000左右，以便具有的内存好处, 减少内存的消耗
+activerehashing yes
+启用哈希刷新，每100个CPU毫秒会拿出1个毫秒来刷新Redis的主哈希表（顶级键值映射表）
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+客户端的输出缓冲区的限制，可用于强制断开那些因为某种原因从服务器读取数据的速度不够快的客户端
+hz 10
+ 默认情况下，“hz”的被设定为10。提高该值将在Redis空闲时使用更多的CPU时，但同时当有多个key
+# 同时到期会使Redis的反应更灵敏，以及超时可以更精确地处理
+aof-rewrite-incremental-fsync yes
+ 当一个子进程重写AOF文件时，如果启用下面的选项，则文件每生成32M数据会被同步
+
+ vm-enabled no
+
+指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制）
+vm-swap-file /tmp/redis.swap
+虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享

@@ -134,3 +134,105 @@ https://www.jianshu.com/p/f5c1dbb4a028 docker+Jenkins
 
 https://www.cnblogs.com/Csir/p/6888474.html  docker常用命令
 
+
+
+进入运行的容器
+docker exec -it 容器id bash
+docker run -it 容器名称 bash 如果不是root权限  加上-u root
+
+使用docker run命令来启动容器，docker在后台运行的标准操作包括 
+1.检查本地是否存在指定的镜像，不存在则从公有仓库下载
+2.使用镜像创建并启动容器
+3.分配一个文件系统，并在只读的镜像层外面挂载一层可读可写层
+4.从宿主主机配置的网桥接口中桥接一个虚拟接口道容器中去
+5.从地址池分配一个ip地址给容器
+6.执行用户指定的应用程序
+7.执行完毕之后容器被终止
+
+查询docker内存占用情况  docker stats
+查询docker容器的信息  docker inspect --format '{{.Id}}' registry:5000/elasticsearch:5.6
+
+ docker删除镜像  docker rmi elasticsearch:5.5
+ 
+ docker 私服搭建，创建完私服之后，会启动一个容器，
+ docker ps |grep registry 默认是5000端口提供服务
+ 
+ docker info 查看当前配置 
+ 
+ 遇到无法删除的镜像，docker stats查看占用其实都是0 这时候用docker rm -f删除掉
+ 
+
+ 
+ b8e2b04fa92b
+
+ registry:5000/robot-elasticsearch-test-v2:5.6
+ 
+ 查看docker网络状态 docker network ls
+ docker创建自定义网络
+ docker network create --driver bridge es_network
+ docker network create --driver bridge ali_network
+
+ Docker多容器启动顺序问题，可以使用health-check
+ http://blog.joylau.cn/2018/12/19/Docker-Compose-StartOrder/
+ demo：
+server:
+  image: 34.0.7.183:5000/joylau/traffic-service-server:1.2.0
+  container_name: traffic-service-server
+  ports:
+    - 9368:9368
+  restart: always
+  volumes:
+    - /Users/joylau/log/server:/home/liufa/app/server/logs
+  environment:
+    activeProfile: prod
+  hostname: traffic-service-eureka
+  healthcheck:
+    test: "/bin/netstat -anp | grep 9367"
+    interval: 10s
+    timeout: 3s
+    retries: 1
+admin:
+  image: 34.0.7.183:5000/joylau/traffic-service-admin:1.2.0
+  container_name: traffic-service-admin
+  ports:
+    - 9335:9335
+  restart: always
+  volumes:
+    - /Users/joylau/log/admin:/home/liufa/app/admin/logs
+  environment:
+    activeProfile: prod
+  depends_on:
+    server:
+      condition: service_healthy
+  hostname: traffic-service-admin
+  links:
+    - server:traffic-service-eureka
+	
+  查看网络连接 lsof -i
+  
+  docker run -td -p 8005:8005 --name=provider-small registry:5000/ali-balance-provider --network=host provider-small
+  docker run -td -p 8006:8006 --name=provider-medium registry:5000/ali-balance-provider --network=host -e JAVA_OPTS='-Dquota=medium' provider-medium
+  docker run -td -p 8007:8007 --name=provider-large registry:5000/ali-balance-provider --network=host provider-large
+  
+  docker run -td -p 9206:8087 --name=consumer registry:5000/ali-balance-consumer --network=host consumer
+
+
+  docker run -it -p 8007:8007 --name=provider-large registry:5000/ali-balance-provider  provider-large
+  
+  docker删除镜像 tag=none的镜像
+  docker images|grep none|awk ‘{print $3}’|xargs docker rmi 
+  df617635b46f
+  
+  
+ tcp {
+    mode => "server"
+    host => "0.0.0.0"
+    port => 4567
+    mode => "server"
+    type => "microwiki"
+    add_field => {
+      "name" => "Routh"
+    }
+  }
+  
+ffb66cf97050

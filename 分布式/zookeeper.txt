@@ -1,1 +1,2 @@
 1 zk的集群
+wget http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz

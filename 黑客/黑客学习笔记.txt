@@ -1,0 +1,4 @@
+1 nslookup www.baidu.com  查看真实ip
+2 获取到ip之后，可以通过旁站 c段 0day xss
+3 windows 查询用户信息 systeminfo
+  linux 是uname -a

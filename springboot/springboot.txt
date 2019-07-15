@@ -70,3 +70,15 @@
 14 记录一次xml转为springboot的bean的过程
 有参考价值的博客
 https://blog.csdn.net/u013423085/article/details/82872533#proxyMode_33
+
+ab -c 1 -n 10 https://robot.odrcloud.cn/
+
+ab -c 10 -n 100 -p start.txt -H "device: PC" -H "platform: zjODR" -H "dsType: primary" -H"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36" https://robot.odrcloud.cn/start
+
+ab -c 10 -n 100 -p start.txt -H "device: PC" -H "platform: zjODR" -H "dsType: primary" -H"User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36" https://robot.odrcloud.cn/start
+
+
+
+
+
+

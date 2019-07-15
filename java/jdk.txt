@@ -1,0 +1,18 @@
+1 ArrayList的remove操作没有缩容
+
+2 hashMap 死锁 https://coolshell.cn/articles/9606.html
+
+3 Runtime执行sh脚本 https://www.cnblogs.com/mingforyou/p/3551199.html
+
+  public static void main(String[] args) throws IOException {
+    StringBuilder stringBuilder = new StringBuilder();
+    String[] sh = {"/bin/sh","-c","ps -ef |grep python | awk '{print $2}'"};
+    Process echo_hello_world = Runtime.getRuntime().exec(sh);
+    InputStream inputStream = echo_hello_world.getInputStream();
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset()));
+    String len;
+    while ((len = bufferedReader.readLine()) != null) {
+      stringBuilder.append(len + "\n");
+    }
+    System.out.println("result is " + stringBuilder.toString());
+  }

@@ -17,7 +17,7 @@ $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 
 $ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
  
-docker-ce.x86_64            18.06.1.ce-3.el7
+docker-ce.x86_64            18.06.1.ce-3.el7   18.03.0-ce
 6、可以查看所有仓库中所有docker版本，并选择特定版本安装
 
 $ yum list docker-ce --showduplicates | sort -r
@@ -25,7 +25,7 @@ $ yum list docker-ce --showduplicates | sort -r
 
 7、安装docker
 
-$ sudo yum install docker-ce  #由于repo中默认只开启stable仓库，故这里安装的是最新稳定版17.12.0
+$ sudo yum install docker-ce  #由于repo中默认只开启stable仓库，故这里安装的是最新稳定版17.12.0  安装指定版本 yum install docker-ce-18.03.0.ce-1.el7.centos
 $ sudo yum install <FQPN>  # 例如：sudo yum install docker-ce-17.12.0.ce
  
 
@@ -40,3 +40,32 @@ $ docker version
 docker tag registry:5000/robot-java-odr:latest registry:5000/robot-java-odr:2.7.3
 
 docker push registry:5000/robot-java-odr:2.7.3
+
+安装docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.20.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+/data/docker/docker/overlay2/da192366b832eaf934e2c78f5aa333f91d5e7eefa879cce0bbb0d25ce332c364/diff/usr/share/elasticsearch/config/scripts
+
+docker pull 私服的时候设置别名 vim /etc/hosts 
+-----------第一步-------------------
+127.0.0.1 VM_16_33_centos VM_16_33_centos
+127.0.0.1 localhost.localdomain localhost
+127.0.0.1 localhost4.localdomain4 localhost4
+
+::1 VM_16_33_centos VM_16_33_centos
+::1 localhost.localdomain localhost
+::1 localhost6.localdomain6 localhost6
+
+172.17.0.17 registry hub.odrcloud.cn
+
+------------第二步----------------
+在/etc/docker/创建一个 daemon.json文件
+
+{ 
+	"insecure-registries":["registry:5000"],
+	"registry-mirrors": ["https://registry.docker-cn.com"]
+}
+
+

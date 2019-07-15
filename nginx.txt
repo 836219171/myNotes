@@ -60,4 +60,38 @@ upstream bakend{ #定义负载均衡设备的Ip及设备状态
       server 10.0.0.11:7070 backup; 
 }
 
+nginx.conf 文件里location 中的proxy_read_timeout 默认60s断开
+
+location / {
+		    proxy_pass_header Server;
+		    proxy_set_header Host $http_host;
+		    proxy_redirect off;
+		    proxy_set_header X-Real-IP $remote_addr;
+		    proxy_set_header X-Scheme $scheme;
+		    proxy_pass       http://127.0.0.1:9887;
+		    proxy_http_version  1.1;
+		    proxy_set_header    Upgrade    "websocket";
+		    proxy_set_header    Connection "Upgrade";
+		    proxy_read_timeout 600s; 
+		}
+
+
 分类: li
+开启gizp压缩
+gzip on;
+gzip_min_length 1k;
+gzip_buffers 4 16k;
+gzip_comp_level 4;
+gzip_types text/plain application/x-javascript text/css text/javascript application/javascript;
+gzip_vary off;
+gzip_disable "MSIE [1-6]\.";
+动静资源分离
+location ~.(gif|jpg|jpeg|png|bmp|swf|css|js)$ {
+       root /data/service/mfav-robot/resources/web1/dist;
+}
+		
+
+
+
+
+

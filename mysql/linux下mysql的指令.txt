@@ -343,6 +343,7 @@ innodb_lock_waits ## 锁等待的对应关系
 
 mysql库名有点的时候，需要转义，库名用``来代替
 
+创建robot-odr账户，并且赋予robotv2.0库只读权限
 CREATE USER 'robot-odr'@'%' IDENTIFIED BY 'MySql@hangzhou+2017';
 
 GRANT SELECT ON `robotv2\.0`.* TO 'robot-odr'@'%';
@@ -355,15 +356,36 @@ revoke all on *.* from 'robot-odr'@'%';
 
 
 
+
+
+
 帐号 robot-odr
 密码 MySql@hangzhou+2017
 ip 118.89.162.25
 端口 13306
 
+帐号 visitors
+密码 f3aad0bb8a764
+ip 118.89.162.25
+端口 13306
 
 
 
+CREATE USER 'visitors'@'%' IDENTIFIED BY 'f3aad0bb8a764';
 
+GRANT SELECT ON `robotv2\.0`.* TO 'visitors'@'%';
+
+mysql迁移的时候，可以把data目录下的文件拷贝，但是若是innodb的存储引擎，需要把ibdata的文件也拷贝。要不然会出现表不存在的错误。
+数据库操作时，误删mysql的文件导致(常见于数据库升级或迁移)
+
+:=和=的区别
+= 
+只有在set和update时才是和:=一样，赋值的作用，其它都是等于的作用。鉴于此，用变量实现行号时，必须用:=
+:= 
+不只在set和update时时赋值的作用，在select也是赋值的作用。
+
+MySQL之MVVC解决了幻读，利用了乐观锁，InnoDB在每行数据都增加两个隐藏字段，一个记录创建的版本号，一个记录删除的版本号。
+所以，mysql默认的RR级别，解决了幻读。解决了事务问题
 
 
 

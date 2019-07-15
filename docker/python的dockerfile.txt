@@ -1,0 +1,56 @@
+mkdir -p tmp
+cp -R xinfang_robot tmp/
+cp dockerfile-xinfang-robot-test tmp/
+cp sre_parse.py tmp/
+cd tmp
+
+rm -rf xinfang_robot/.idea
+rm -rf xinfang_robot/service/log/*
+echo $1 > ../robot-odr-test.lastversion
+docker build ./ -f dockerfile-xinfang-robot-test -t registry:5000/xinfang-robot-python-common:$1-test
+docker build ./ -f dockerfile-xinfang-robot-test -t registry:5000/xinfang-robot-python-common:latest
+cd ..
+rm -rf tmp
+
+
+
+FROM registry:5000/robot-python-base:2.2
+MAINTAINER izern.cn
+
+ENV BASE_PATH=/robot-python/service
+
+COPY xinfang_robot /robot-python/
+COPY sre_parse.py /usr/local/lib/python3.6/
+
+
+WORKDIR $BASE_PATH
+.
+
+
+
+#!/bin/bash
+mkdir -p tmp
+cp -R military_related_robot tmp/
+cp dockerfile_sj tmp/
+cd tmp
+rm -rf military_related_robot/.idea
+rm -rf military_related_robot/service/log/*
+echo $1 > ../robot.lastversion
+docker build ./ -f dockerfile_sj -t registry:5000/robot-sj-python-common:$1-test
+docker build ./ -f dockerfile_sj -t registry:5000/robot-sj-python-common:latest
+cd ..
+rm -rf tmp
+~            
+
+
+  1 FROM registry:5000/robot-python-base:2.0
+  2 MAINTAINER izern.cn
+  3 
+  4 ENV BASE_PATH=/robot-python/service
+  5 
+  6 COPY military_related_robot /robot-python/
+  7 
+  8 
+  9 WORKDIR $BASE_PATH
+ 10 
+

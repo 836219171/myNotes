@@ -1,2 +1,22 @@
 1 kafka的leader选举是通过broad_id注册的先后顺序确定的
 2 kafka官方文档 http://kafka.apache.org/documentation/
+
+kafka-console-producer.sh --broker-list localhost:9092 --topic zhhtest
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic zhhtest --from-beginning
+
+kafka的实践经验
+1 最好用外置的zk
+2 如果外网访问的时候 需要配置这个 注释的example里没有advertised，所以不行。客户端都启动不起来 
+要有advertised前缀 advertised.listeners=PLAINTEXT://211.159.161.31:9092
+参考 https://www.jianshu.com/p/3f986c8eb3f9
+
+消费者提交方式
+1 自动提交位移
+2 手动提交当前位移
+3 手动异步提交当前位移
+4 手动异步提交当前位移带回调
+5 混合同步与异步提交位移
+
+
+手动提交结束出现异常的时候，不要尝试重新提交，会造成数据不一致的现象 

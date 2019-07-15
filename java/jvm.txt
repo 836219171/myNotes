@@ -115,8 +115,9 @@ jdk11的 ZGC
 
 打印当前虚拟机参数 java -client -XX:+PrintFlagsFinal Benchmark
 
+oracle的jvm参数 https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html
 
-
+jvm日志cms分析 : https://www.cnblogs.com/onmyway20xx/p/6590603.html
 
 
 

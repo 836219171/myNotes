@@ -184,7 +184,13 @@ S：进程的状态，其中S表示休眠，R表示正在运行，Z表示僵死�
 TIME+：该进程启动后占用的总的CPU时间
 COMMAND：进程启动的启动命令名称
 
-scp 远端传送文件
+scp 远端传送文件 scp xxx @root/data/xxx
+scp /home/hundsun/appcom/* hundsun@10.20.27.239:/home/hundsun/appcom
+
+scp /home/hundsun/appcom/* hundsun@10.20.27.239:/home/hundsun/appcom
+
+scp  root@122.112.248.222:/ODR/system/data/service/mfav-robot.zip /data 
+
 
 监控磁盘io ****************************
 [root@testhost ~]# iostat
@@ -215,7 +221,133 @@ Blk_wrtn:  写入的block总数.
 mpstat查看系统的cpu运行状态
 
 
+./kafka-console-consumer.sh --bootstrap-server PLAINTEXT://211.159.161.31:9092 --topic test --from-beginning
+
+./kafka-console-producer.sh --broker-list localhost:9092 --topic zhhtest
+
+dmesc：诊断设备故障
 
 
+查询内存占用情况   topic -p pid  
+htop很多重复进程的时候 
+按F2
+
+选择 Display options
+
+选择 Hide userland threads
+
+python 20 java 20 mysqld 20
+
+统计查询结果，先输出到文件中
+
+ps -ef|grep python > 1.txt
+
+man wc查询对文件的操作
+
+wc -l 1.txt 统计查询结果
+
+pgrep 只列出pid  
+pgrep xxx |xargs kill -s 9 杀掉列出的程序
+
+telnet port  测试端口是否可用
+nc port 测试端口是否可用
+nmap指令 -p1-65535 查询1到65535端口哪些是开放的 
+
+df -h查询系统文件内存使用情况
+
+du -su * 递归查询当前目录文件夹大小
+
+当前目录下占用情况du -sh *
+
+linux使用curl命令 使用http代理
+
+例如查看http的代理 curl  http://119.3.38.125:9201/_cat/indices?v
+
+
+docker run -d --name es_admins -p 9100:9100 mobz/elasticsearch-head:5
+
+vim yy复制当前行  p粘贴
+
+
+ iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+ iptables -A INPUT -p tcp --dport 8009 -j ACCEPT
+ iptables -L -n -v
+
+ service iptables save
+
+
+ centos7 开启端口
+ firewall-cmd --zone=public --add-port=5003/tcp --permanent
+ 
+  重启防火墙 
+ firewall-cmd --reload
+ 
+ 查询是否开启端口
+ firewall-cmd --zone=public --query-port=5008/tcp
+ 
+ 列出所有开放的端口
+ firewall-cmd --list-all
+
+ 批量添加端口，但是目前不太好使
+ firewall-cmd --zone=public--add-port=5000-5010/tcp --permanent
+ 
+ 查看是否安装过
+ rpm -qa | grep screen
+ 
+ screen 离线执行窗口 
+ 
+ 例如离线执行远端传输
+ screen -S scp创建一个名字叫scp的窗口
+ 
+ scp  root@122.112.248.222:/ODR/system/data/service/mfav-robot.zip /data 
+ 
+ screen -x scp 查看是否在执行
+ 
+ 原话
+ screen -S scp创建一个名字叫scp的窗口
+ 
+ 生成公钥
+ ssh-keygen -t rsa -C "prod"
+ 
+ scp  -r /data/docker/elasticsearch-data/ root@172.17.16.40:/data/service/conf/elasticsearch/data/
+
+ 
+ 查看域名指向 example: nslookup httest.robot.odrcloud.com 
+ 
+
+
+ssh -o StrictHostKeyChecking=no root@123.207.216.40 'docker pull registry:5000/robot-java-odr:latest'
+
+
+
+ scp  root@122.112.248.222:/ODR/system/data/service/robot-dev/robot-odr-sj.jar /data/service/mfav-robot/sj-robot
+ 
+ vim全局替换 %s/dockerfile/dockerfile_sj/g  撤销上一步操作时u
+ 
+ xshell 小文件的下载 直接用sz   上传用rz 
+ 
+ linux挂载swapfile命令
+   30  2019-05-14 18:40:10 dd if=/dev/zero of=/data/swapfile bs=2M count=4096
+   31  2019-05-14 18:41:26 mkswap /data/swapfile 
+   32  2019-05-14 18:41:33 swapon /data/swapfile 
+
+   查看jvm内存溢出demo
+   
+   查看某个进程内线程状况
+   top -Hp PID 
+   
+   如果某个线程占用的较高，可以用jstack查看 
+   root@a39de7e7934b:/# printf "%x\n" 10
+   a
+  
+  wrk压测工具 wrk -t4 -c1024 -d60s -T5 --script=./wrk.lua --latency http://localhost:9206/invoke
+                            
+iptables -I INPUT -p tcp --dport 8010 -j ACCEPT
+ 
+nmap查看服务器启动端口  nmap -p1-65535 172.17.0.11
+
+iptables -I INPUT -p tcp --dport 8009 -j ACCEPT
+
+到行尾 shift + 4
 
             			 

@@ -1,0 +1,152 @@
+官网 https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/
+
+5.6版本安装的几个坑 安装
+sysctl -w vm.max_map_count=262144
+
+安装过程注意配置文件读写权限
+配置文件要在
+transport.host: 0.0.0.0
+http.host: 0.0.0.0
+cluster.name: robot-java
+node.name: elastic-01
+node.master: true
+node.data: true
+bootstrap.system_call_filter: false
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+path.data: /path/data
+
+
+
+docker pull elasticsearch:6.5.0
+docker images
+docker run --name elasticsearch -d -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -p 9200:9200 -p 9300:9300 elasticsearch:6.5.0
+42d639a089348b393b0cc912141ef357b6565996c5c4863e363f8729da229d7d
+cat /proc/sys/vm/max_map_count
+sysctl -w vm.max_map_count=262144
+docker start 42d6
+docker pull mobz/elasticsearch-head
+docker exec -it 42d639a08934 /bin/bash
+/usr/share/elasticsearch/config
+yum install -y vim
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+	
+问题 ： 分页最多前1万条
+解决ElasticSearch深度分页机制中Result window is too large问题
+要解决这个问题，可以使用下面的方式来改变ES默认深度分页的index.max_result_window 最大窗口值
+
+curl -XPUT http://localhost:9201/ik_new_cases/_settings -d '{ "index" : { "max_result_window" : 100000000}}'
+
+创建mpping https://blog.csdn.net/llf_1241352445/article/details/77533041
+
+ 我们可以将它增加一种类型，使他既能被当做字符串又能当做日期型。
+
+Java代码  收藏代码
+curl -XPUT localhost:9200/my_index/my_type/_mapping -d '  
+{  
+    "my_type": {  
+        "properties": {  
+            "created": {  
+                "type":   "multi_field",  
+                "fields": {  
+                    "created": { "type": "string" },  
+                    "date":    { "type": "date"   }  
+                }  
+            }  
+        }  
+    }  
+}  
+'  
+ 
+
+采用标准的重建索引方式的时候，我们推荐大家为每一个type都建立一个索引同义词，即便在同一个索引库中的多个type，也推荐使用建立一个同义词来访问。即一个index里面包含一个type，因为在elasticsearch中，跨index查询数据是很方便的。这样，我们就可以在reindex一个type后，立即将type生效，而不是将index下面所有的type都重建完后，同义词才能生效。
+
+
+curl -XPUT http://111.231.114.205:9201/search_log/_mapping/logs/ -d 
+'{
+  "mappings": {
+    "logs": {
+      "properties": {
+        "userInfo": {
+          "type": "keyword"
+        }
+      },
+      "userType": {
+        "type": "keyword"
+      },
+      "inputContent": {
+        "type": "keyword"
+      },
+      "clickContent": {
+        "type": "keyword"
+      },
+      "searchType": {
+        "type": "keyword"
+      },
+      "searchResult": {
+        "type": "keyword"
+      },
+      "status": {
+        "type": "integer"
+      },
+      "date": {
+        "type": "date"
+      }
+    }
+  }
+}'
+
+
+curl -XPUT 'http://111.231.114.205:9201/search_log/_mapping/logs' -d '
+{
+	"mappings": {
+		"logs": {
+			"properties": {
+				"userInfo": {
+					"type": "keyword"
+				}
+			}
+		}
+	}
+}'
+
+
+ik分词器 mapping
+{
+  "properties": {
+    "caseContent": {
+      "type": "text",
+      "analyzer": "ik_max_word",
+      "search_analyzer": "ik_max_word"
+    },
+ 
+}
+
+text字段才能加分词，keyword不能加分词
+
+
+
+新建mapping后，拷贝数据
+POST _reindex
+{
+  "source": {
+    "index": "new_cases"
+  },
+  "dest": {
+    "index": "ik_new_cases"
+  }
+}
+
+
+ docker commit a1efab1b9adc registry:5000/robot-elasticsearch-test:5.6
+ //5.5以后版本的安装方式
+ elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v5.6.16/elasticsearch-analysis-ik-5.6.16.zip
+ //安装成功以后，持久化用commit 
+ registry:5000/robot-elasticsearch-test-v3:5.6
+ 
+ registry:5000/robot-elasticsearch-test-v1
+ 
+ c67a28157734
+ es深度分页 ES 深度分页scroll使用方式 https://www.jianshu.com/p/32f4d276d433

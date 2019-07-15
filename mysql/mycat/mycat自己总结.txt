@@ -1,3 +1,5 @@
 1 schemal里面的 checkSqlSchemal里面如果是true的话，会检查表名前面是否带有数据库名，如果有的话会去掉
 2 cp /data/service/mfav-robot/conf/mycat/test-schema.xml    /root/mycat/conf/schema.xml  
-3 mv 
+3 	<schema name="robotv2.0" checkSQLschema="true" sqlMaxLimit="" dataNode="dn1"></schema>  checkSQLschema这个配置中需要指明你要移除的数据库名，不然不会移除
+
+https://jsharobot.odrcloud.cn

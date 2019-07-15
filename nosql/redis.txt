@@ -144,6 +144,46 @@ spring:
      max-redirects: 3
      prefix: bjxf
      password: beiming_storm
+	 
+*******************redis压测*****************************
+ 
+1  100并发连接 10万个请求
+root@95df1eb994b8:/data# redis-benchmark -h 127.0.0.1 -p 6379 -c -n 100000
+====== 100000 ======
+  100000 requests completed in 3.86 seconds
+  0 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+100.00% <= 1 milliseconds
+100.00% <= 1 milliseconds
+25879.92 requests per second
+
+2 存取大小为100字节的数据包
+redis-benchmark -h 127.0.0.1 -p 6379 -d 100
+
+3 只测试某些操作的性能
+redis-benchmark -t set,lpush -n 100000 -q
+
+4 只测试某些数据存储的性能
+redis-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
+*****************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 		   

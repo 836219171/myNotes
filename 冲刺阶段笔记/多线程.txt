@@ -2,3 +2,6 @@ countDownLatch 阻塞线程，直到减到0时开始执行下一个
 semaphore减少
 CyclicBarrier增加
 ArrayList多线程状态下线程不安全，要使用CopyOnWriteArrayList
+
+BlockingQueue 提供阻塞的方法是put Take 
+              抛出异常的ADD REMOVE 有返回值Offer

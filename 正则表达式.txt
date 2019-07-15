@@ -7,3 +7,6 @@
    exp(?!assert)
    在满足正则匹配的同时还要满足断言部分
 5 javascript的search()  match()    
+
+6 几个括号就是group几(从1开始) 
+7 ？非贪婪模式 如果有多个，只取一个 [\s\S]匹配所有的内容
