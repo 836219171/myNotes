@@ -277,7 +277,7 @@ vim yy复制当前行  p粘贴
 
 
  centos7 开启端口
- firewall-cmd --zone=public --add-port=5003/tcp --permanent
+ firewall-cmd --zone=public --add-port=6379/tcp --permanent
  
   重启防火墙 
  firewall-cmd --reload
@@ -346,8 +346,89 @@ iptables -I INPUT -p tcp --dport 8010 -j ACCEPT
  
 nmap查看服务器启动端口  nmap -p1-65535 172.17.0.11
 
-iptables -I INPUT -p tcp --dport 8009 -j ACCEPT
+iptables -I INPUT -p tcp --dport 18084 -j ACCEPT
 
 到行尾 shift + 4
 
-            			 
+D:\Tools\xshell\;E:\java\java\jdk\bin;D:\Tools\mysql-5.7.16-winx64\bin;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\DTS\Binn\;%CATALINA_HOME%\bin;%CATALINA_HOME%\lib;C:\Program Files (x86)\QuickTime\QTSystem\;%MAVEN_HOME%\bin;E:\apache-cxf-3.1.15\bin;E:\SVN\bin;E:\SVN\Client\bin;D:\Tools\Git\Git\cmd;E:\java\gradle-4.7\bin;C:\Program Files\nodejs\;F:\python;F:\python\Scripts;F:\python\Lib   		
+
+查询centos版本 cat /etc/redhat-release
+
+firewall防火墙  开启指定端口
+firewall-cmd --zone=public --add-port=7025/tcp --permanent
+firewall-cmd --reload
+
+jmeter -n -t testplan.jmx -l test.jtl
+
+
+-eq:等于
+-ne:不等于
+-le:小于等于
+-ge:大于等于
+-lt:小于
+-gt：大于
+
+动态拼接变量的时候用eval 
+#!/bin/bash
+BASE_DIR="ac"
+BASE_DIR1="B"
+BASE_DIR2="C"
+BASE_DIR3="D"
+BASE_LOW=$2
+
+for((i=1;i<=3;i++));
+do
+eval echo '$'BASE_DIR${i};
+done
+
+查看系统监听21端口 netstat -nltp | grep 21
+qq邮箱验证
+divlepdlxphmbffe
+qepbjaqrkkljbcha
+
+查看cpu详情  cat /proc/cpuinfo
+
+SUSE 下载网址 https://www.suse.com/zh-cn/products/server/download2/OWglKQbc8MY~/?event_id=GSDGNweb23162&event_name=Eval:+SLES+SP2+-+AMD+64+Page&icid=GSDGNweb23678&icname=Eval:+SLES+SP2+-+AMD%2064+Page+Nurture&build=OWglKQbc8MY~
+SLE-12-SP2-Server-DVD-x86_64-GM-DVD1.iso
+
+dd724e9248f2c3507e8e9d0050a4c8b6e9aeda7fdf0870858757cc6c01b7d47d
+
+SLE-12-SP2-Server-DVD-x86_64-GM-DVD2.iso
+
+9176b3686f46114fe673d091fc3803afb2ac31e0300e5b9fc35f1be329bf75dc
+
+查看内存占用cat /proc/meminfo
+
+如何释放Cache Memory(缓存内存)：
+
+用下面的命令可以释放Cache Memory：
+
+To free pagecache:
+echo 1 > /proc/sys/vm/drop_caches
+To free dentries and inodes:
+echo 2 > /proc/sys/vm/drop_caches
+To free pagecache, dentries and inodes:
+echo 3 > /proc/sys/vm/drop_caches
+
+https://blog.csdn.net/fall221/article/details/46290563
+
+在SUSE linux上面，做的一些优化，生成文件，或者文件拷贝后，会把文件读到内存里面，做缓存，此时应用是正常的，
+https://www.linuxatemyram.com/
+https://www.linuxatemyram.com/play.html 
+
+生成文件指令 dd if=/dev/zero of=bigfile.log bs=1M count=1000
+释放内存指令 echo 3 | sudo tee /proc/sys/vm/drop_caches
+
+chkconfig 加入开机启动
+
+vmstat -n 5 监控磁盘io
+
+大文件传输demo，通过ssh减少一次读写
+server2$ gzip -c /back/mydb/mytable.MYD | ssh root@server2 "gunzip -c -> /var/lib > /mysql/mydb/mytable.MYD
+如果想提高压缩率，使用bzip2， 如果想要压缩速度，用LZO是一个好的选择
+
+还可以去除加解密
+server2$ nc -l -p 8080 | tar xvzf -
+server1$ tar cvzf - /var/lib/mysql/mydb/mytable.MYD | nc -q 1 server2 808
+
+	 

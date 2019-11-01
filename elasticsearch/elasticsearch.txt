@@ -150,3 +150,23 @@ POST _reindex
  
  c67a28157734
  es深度分页 ES 深度分页scroll使用方式 https://www.jianshu.com/p/32f4d276d433
+ 
+ 底层 lucene
+简单来说，lucene 就是一个 jar 包，里面包含了封装好的各种建立倒排索引的算法代码。我们用 Java 开发的时候，引入 lucene jar，然后基于 lucene 的 api 去开发就可以了。
+
+
+安装elk网址 
+https://www.cnblogs.com/hunternet/p/11016993.html
+执行命令：
+docker pull sebp/elk:650
+
+docker run -d -p 5044:5044 -p 0.0.0.0:5601:5601 -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -p 0.0.0.0:4560:4560 -v /var/data/elk:/var/lib/elasticsearch --name=elk sebp/elk:650
+
+
+sysctl -w vm.max_map_count=262144
+
+docker exec -it <container-id> bash
+
+service logstash stop
+
+/opt/logstash/bin/logstash -e 'input { tcp { mode => "server" host => "0.0.0.0"  port => 4560 codec => json_lines } } output { elasticsearch { hosts => ["localhost:9200"] index => "springboot-logstash-%{+YYYY.MM.dd}"} }'

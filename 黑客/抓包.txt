@@ -1,0 +1,4 @@
+https://www.cnblogs.com/dinggf/p/11280854.html
+需要安装根证书，不然只能抓取http请求
+
+android 7.0以上版本可以由app自定义是否信任外部证书。所以微信小程序爬不到数据

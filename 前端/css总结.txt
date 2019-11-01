@@ -304,3 +304,19 @@ rows分成垂直型的几块
 cols分成横行的几块
 10. idea当中写路径时"../image/.jpg"
 11 kindeditor使用时要想获取textarea的值，在js里面加入    afterBlur : function(){this.sync();}//加上这句话才能获取编辑器内容
+
+12 width: 写死的固定宽度   max-width:不超过width的时候，自适应宽度
+
+nohup java -Dserver.port=7025 -jar usp-service-1.0-SNAPSHOT.jar
+
+
+java -Dserver.port=9000 -Dspring.application.name.side=usp-eureka-1  -Deureka.instance.hostname=localhost-Dserver.port.side=9001 -Dspring.application.name.side=usp-eureka-2 -Deureka.instance.hostname.side=localhost-jar usp-eureka-test-1.0-SNAPSHOT.jar 
+
+
+
+
+
+
+
+
+

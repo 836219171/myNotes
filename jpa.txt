@@ -1,0 +1,1 @@
+1 讲解@Embedded和@Embeddable   @AttributeOverrides和@AttributeOverride https://blog.csdn.net/lmy86263/article/details/52108130

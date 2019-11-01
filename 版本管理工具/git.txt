@@ -21,7 +21,7 @@ git  push  origin  master
 git clone 
 git log 查看日志(可以查看commitId)
 Git reset --hard commitId
-rebase是风险较高的merge
+rebase是风险较高的mergemerge
 
 命令输入:
 

@@ -1,0 +1,23 @@
+1 suse下面下载 https://blog.csdn.net/wenwenxiong/article/details/50766535
+2  zypper refresh 
+现在就可以升级软件了 
+zypper update 
+安装软件也很简单 
+zypper install 软件名 
+搜索可以用
+zypper search xxx
+
+安装jdk
+zypper install java
+安装openjdk扩展包
+zypper install java-1_8_0-openjdk-devel
+
+JAVA_HOME=/usr/java/jdk1.8.0_191
+
+CLASSPATH=.:$JAVA_HOME/lib/tools.jar
+
+PATH=$JAVA_HOME/bin:$PATH
+
+export JAVA_HOME CLASSPATH PATH 
+
+zypper install java-1.8.0_101-openjdk-devel 

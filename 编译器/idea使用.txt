@@ -52,3 +52,5 @@
 	
 	!?*.java;!?*.form;!?*.class;!?*.groovy;!?*.scala;!?*.flex;!?*.kt;!?*.clj;!?*.aj
 	!?*.java;!?*.form;!?*.class;!?*.groovy;!?*.scala;!?*.flex;!?*.kt;!?*.clj;!?*.aj;!?*.xml
+29 	debug模式技巧 1 断电回退 DROP FRAME
+30  中断debug，中断请求，不再走剩余六成 force return

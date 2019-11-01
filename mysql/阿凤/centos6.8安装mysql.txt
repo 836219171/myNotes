@@ -5,7 +5,7 @@
 5 service mysqld start
 6 grep 'temporary password' /var/log/mysqld.log  #查找密码
 7 mysql -uroot -p 
-8 ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
+8 ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 
 4.开启远程连接
 设置iptables开放3306端口
@@ -24,3 +24,13 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'qinliang';
 
 set global validate_password_policy=0;
 set global validate_password_length=4;
+
+开启防火墙
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT
+firewall-cmd --zone=public --add-port=3306/tcp --permanent
+firewall-cmd --reload
+
+
+ 
+1 ps -ef|grep hz-robot-odr-2.7.6.jar |grep -v grep |awk '{print $2}'
+2 top -p 11073 -d 1

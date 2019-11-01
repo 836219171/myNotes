@@ -1,0 +1,15 @@
+1下载rpm源
+2 yum install initscripts urw-fonts
+3 rpm -Uvh <local rpm package>
+4 service grafana-server start
+
+curl  http://admin:admin123@localhost:3000/api/datasources -X POST -H "Accept: application/json" -H "Content-Type: application/json" -d '{
+  "name":"test_datasource",
+  "type":"graphite",
+  "url":"http://localhost:9090",
+  "access":"proxy",
+  "basicAuth":false
+}'
+
+
+curl http://admin:admin123@localhost:3000/api/datasources -X GET  -H "Accept: application/json" -H "Content-Type: application/json" 

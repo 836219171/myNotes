@@ -1,5 +1,6 @@
 
 linux 记得按快照
+
 #一、安装前准备
 卸载mysql rpm -e –nodeps +包名
           查找rpm -qa|grep -i mysql  

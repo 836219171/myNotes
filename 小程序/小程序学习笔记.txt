@@ -1,0 +1,9 @@
+小程序账号 a15156509337@163.com
+            qinliang
+1 font-family:"PingFangSC-Thin"想使用的话，需要上传至https://transfonter.org/ 转成base64，定义@font-face外部引用
+2 可以在app.wxss中定义全局css样式，有些样式不被components识别，有些可以
+3 container宽度自适应的话，需要给他的flex定义成  display: inline-flex;
+4 bind和cache 两种事件，cache会阻止向上冒泡
+5 敏感点击的触碰区域要大于图标的实际区域
+6 对于看起来充满整个区域的组件，最好width设置成100%
+7 不想用父级元素的属性时，阻止向上冒泡 catchtap
