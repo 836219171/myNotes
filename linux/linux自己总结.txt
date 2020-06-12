@@ -431,4 +431,71 @@ server2$ gzip -c /back/mydb/mytable.MYD | ssh root@server2 "gunzip -c -> /var/li
 server2$ nc -l -p 8080 | tar xvzf -
 server1$ tar cvzf - /var/lib/mysql/mydb/mytable.MYD | nc -q 1 server2 808
 
+windows关闭对应进程号
+netstat -ano |findstr 端口号
+taskkill /pid  进程号  /F
+
+windows下写的sh脚本，传输到linux会出错，报如下错误。需要格式化
+/bin/sh^M: bad interpreter: No such file or directory
+
+解决方法:
+vim test.sh
+
+:set ff=unix
+
+:x
+
+
+ sh -n serverDeploy.sh 命令来检查脚本的语法；
+
+批量解压的sh脚本 
+#!/bin/bash
+#dir=/export/data/mysql/dumps/`date +%F -d yesterday`
+
+ls_date=`date +%Y-%m-%d`
+name=judicial-gateway-warn-*.log.gz
+
+cd $1
+echo "检查文件目录..."
+if [ ! -d ${ls_date}  ];then
+ mkdir ${ls_date}
+else
+  echo "当前日期文件夹已经存在" 
+fi
+
+echo "开始解压"
+gunzip=$(find .  -name  "$name")
+
+for i in $gunzip
+do
+targetfile=${i%.*}
+ss=${targetfile#.}
+target=$ls_date$ss
+touch $target
+(gunzip -c $i  > $target)
+echo $1$target
+done
+echo ‘解压完成’
+
+查询进程的日志打印到哪个路径
+lsof - p pid | grep log
+
+
+
+请求过多，遇到的问题  connection reset / connection reset by peer
+netstat 命令，执行 netstat -s | egrep "listen|LISTEN"
+如上图所示，overflowed 表示全连接队列溢出的次数，sockets dropped 表示半连接队列溢出的次数。
+
+排查cpu/线程问题
+16进制转10进制
+printf '%x\n' pid得到 nid
+
+在 jstack 中找到相应的堆栈信息
+jstack pid |grep 'nid' -C5 –color
+
+查看内存排序情况，根据大小排序，找到前30的
+pmap -x pid | sort -rn -k3 | head -30
+
+
+
 	 

@@ -16,3 +16,7 @@
     }
     System.out.println("result is " + stringBuilder.toString());
   }
+  
+  
+  Java的dns
+  https://www.linuxidc.com/Linux/2016-07/133182.htm

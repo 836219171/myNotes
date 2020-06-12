@@ -11,3 +11,16 @@ tls_licence_tools verify D:\public_key sig 的存放路径 D:\user_sig 140017394
 tls_licence_tools.exe gen ec_key.pem sig 1400173943 bmadmin
 
 tls_licence_tools.exe verify public.pem sig 1400173943 bmadmin
+
+超市小程序
+a15950493130@sina.com
+qinliang110
+
+abc836219171@sina.com 
+邮箱密码 qinliang
+平台密码 qinliang110
+
+qinliang
+
+支付平台操作密钥 qinliang110@
+API密钥0dead95439e54ec0b26a29215c44b071

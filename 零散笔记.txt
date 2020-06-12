@@ -1,3 +1,16 @@
 1 tps example： 每秒完成了20万笔订单
 2 qps example： 在并发1000的时候，网站的qps是500  每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准。
 
+xss攻击防范，可以用spring自带的
+HtmlUtils.htmlEscape
+
+两种线程安全队列
+ConcurrentLinkedQueue 无限队列
+LinkedTransferQueue   阻塞队列
+
+使用随机数不规范，不能用Random
+serureRandom()
+
+MessageFormat和SimbleDataFormat都是线程不安全的 不能轻易使用，需要包装
+
+ xml文件禁止转义 <![CDATA[   ]]>

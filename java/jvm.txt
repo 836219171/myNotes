@@ -119,8 +119,10 @@ oracle的jvm参数 https://www.oracle.com/technetwork/java/javase/tech/vmoptions
 
 jvm日志cms分析 : https://www.cnblogs.com/onmyway20xx/p/6590603.html
 
+查看jvm参数 java -XX:+PrintFlagsInitial
 
-
+jclasslib插件看字节码
+安装hsdis
 
 
 

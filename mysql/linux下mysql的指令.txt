@@ -402,7 +402,18 @@ select * from nideshop_group_detail where FIND_IN_SET('4',user_id)
 
 
 
+tbase必须要更新统计分析才能更新索引 
+语句是  analyze + 表名
 
 
+stolon 是tbase对pg数据库做的高可用 
 
+回表
+简单说一下回表，就是根据非主键索引查找到根节点，拿到根节点后，再去主键索引中查找相应数据。
 
+oracle用子查询 limit
+
+oracle建立函数索引过程
+	create index NVL_RECORID_ID on  tm_t_jhseattrack(nvl(recordid, '0'));
+    analyze index NVL_RECORID_ID validate  structure;  //需要分析一下
+	where nvl(recordid, '0') > '0'

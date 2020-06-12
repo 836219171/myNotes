@@ -206,9 +206,12 @@ Host 182.254.158.159
 ssh-keygen -t rsa -C "836219171@qq.com"
 git config user.name qinliang
 git config user.email 836219171@qq.com
-ssh-keygen -t rsa -C "836219171@qq.com" -b 4096
+ssh-keygen -t rsa -C "836219171@qq.com" -b 2048
 
 git当前分支无法删除  用这个命令切换分支 git remote set-head origin master
+
+新建仓库，推初始代码的时候遇到问题 refusing to merge unrelated histories
+解决方法：  git pull origin master --allow-unrelated-history
 
 
 

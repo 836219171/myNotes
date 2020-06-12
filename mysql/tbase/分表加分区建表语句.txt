@@ -1,0 +1,1 @@
+create table t_time_range(f1 bigint, f2 timestamp ,f3 bigint) partition by range (f2) begin (timestamp without time zone '2017-09-01 0:0:0') step (interval '1 month') partitions (12) distribute by shard(f1)
