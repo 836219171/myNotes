@@ -127,8 +127,12 @@ jclasslib插件看字节码
 
 
 
+UseCompressedOops：普通对象指针压缩，
+UseCompressedClassPointers：类指针压缩
 
+CMSInitiatingOccupancyFraction 表示老年代使用率达到多少时进行 FullGC；
 
+UseCMSCompactAtFullCollection 表示在进行 FullGC 之后进行老年代内存整理，避免产生内存碎片。
 
 
 

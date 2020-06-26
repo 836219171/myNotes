@@ -79,6 +79,11 @@ ab -c 10 -n 100 -p start.txt -H "device: PC" -H "platform: zjODR" -H "dsType: pr
 
 
 
-
+@ComponentScan(value = "com.nrsc.springstudy.c1_componentscan1.study2.config2_test",
+        includeFilters = {
+                @Filter(type = FilterType.ANNOTATION, classes = {Component.class})},
+        useDefaultFilters = false)
+		
+配置扫描的过滤器		
 
 

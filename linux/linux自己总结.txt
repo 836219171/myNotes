@@ -496,6 +496,10 @@ jstack pid |grep 'nid' -C5 –color
 查看内存排序情况，根据大小排序，找到前30的
 pmap -x pid | sort -rn -k3 | head -30
 
+快速定位到 tcp 队列溢出呢
 
+netstat 命令，执行 netstat -s | egrep "listen|LISTEN"
 
+捕获某个进程的网络请求
+strace -p $PID -f -e trace=network -s 10000
 	 
